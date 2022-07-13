@@ -1,2 +1,6 @@
 https://gwokhiujin.github.io/2022/07/13/hello-world/
+https://gwokhiujin.github.io/tags/index.html
+https://gwokhiujin.github.io/categories/index.html
 https://gwokhiujin.github.io/
+https://gwokhiujin.github.io/tags/Hexo/
+https://gwokhiujin.github.io/categories/Hexo/
