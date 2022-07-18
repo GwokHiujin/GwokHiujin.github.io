@@ -4,26 +4,28 @@
 <script src="/config.afbaa107fc1422082649.js"></script>
 <!-- hexo injector head_begin end -->
 <meta charset="utf-8">
-<title>CN-Blogs - Gwok Hiujin's Blog</title>
+<title>解析编译前端Visitor构造 - Gwok Hiujin's Blog</title>
 <base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-<link rel="canonical" href="https://gwokhiujin.github.io/cnblogs/">
+<link rel="canonical" href="https://gwokhiujin.github.io/2022/07/17/%E8%A7%A3%E6%9E%90%E7%BC%96%E8%AF%91%E5%89%8D%E7%AB%AFVisitor%E6%9E%84%E9%80%A0/">
 <link rel="icon" type="image/x-icon" href="/myicon.ico">
 
-<meta name="description" content="🏮 欢迎访问我的中文博客 🏮  🍊 CSDN 其中包括大二上学期的计算机组成原理实验笔记 + 上机碎碎念。 日后不保证能与这边同步更新。 HJin_Gwok的博客_CSDN博客 🤖 博客园 其中包括大二下学期的面向对象程序设计博客作业。 日后应该不会再继续更新。（课程组的任务罢了） HJinGwok - 博客园 (cnblogs.com)">
+<meta name="description" content="挑的封面倒是真材实料的 “visitor” ，而我上一次去艺术馆，已经不知道是什么时候的事了。   先占个坑，过几天写 🕳">
 <meta property="og:type" content="website">
-<meta property="og:title" content="CN-Blogs">
-<meta property="og:url" content="https://gwokhiujin.github.io/cnblogs/index.html">
+<meta property="og:title" content="解析编译前端Visitor构造">
+<meta property="og:url" content="https://gwokhiujin.github.io/2022/07/17/%E8%A7%A3%E6%9E%90%E7%BC%96%E8%AF%91%E5%89%8D%E7%AB%AFVisitor%E6%9E%84%E9%80%A0/index.html">
 <meta property="og:site_name" content="Gwok Hiujin&#39;s Blog">
-<meta property="og:description" content="🏮 欢迎访问我的中文博客 🏮  🍊 CSDN 其中包括大二上学期的计算机组成原理实验笔记 + 上机碎碎念。 日后不保证能与这边同步更新。 HJin_Gwok的博客_CSDN博客 🤖 博客园 其中包括大二下学期的面向对象程序设计博客作业。 日后应该不会再继续更新。（课程组的任务罢了） HJinGwok - 博客园 (cnblogs.com)">
+<meta property="og:description" content="挑的封面倒是真材实料的 “visitor” ，而我上一次去艺术馆，已经不知道是什么时候的事了。   先占个坑，过几天写 🕳">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://gwokhiujin.github.io/cnblogs/tx.jpg">
-<meta property="article:published_time" content="2022-07-14T08:11:26.000Z">
-<meta property="article:modified_time" content="2022-07-15T01:58:05.570Z">
+<meta property="og:image" content="https://images.unsplash.com/photo-1642233104906-18ed46828c6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80">
+<meta property="article:published_time" content="2022-07-17T01:18:56.000Z">
+<meta property="article:modified_time" content="2022-07-18T07:20:25.299Z">
 <meta property="article:author" content="Gwok Hiujin">
+<meta property="article:tag" content="编译技术">
+<meta property="article:tag" content="编译前端">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://gwokhiujin.github.io/cnblogs/tx.jpg">
-<script type="application/ld+json">[{"@context":"http://schema.org","@type":"WebSite","publisher":{"@type":"Person","name":"Gwok Hiujin","description":"Bite the bullet.","image":"https://gwokhiujin.github.io/tx.jpg"},"url":"https://gwokhiujin.github.io","image":"https://gwokhiujin.github.io/tx.jpg","description":"Gwok Hiujin's Blog","author":{"@type":"Person","name":"Gwok Hiujin","description":"Bite the bullet.","image":"https://gwokhiujin.github.io/tx.jpg"},"inLanguage":{"@type":"Language","alternateName":"en"}}]</script><link rel="alternate" type="application/atom+xml" title="Gwok Hiujin's Blog" href="/atom.xml">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1642233104906-18ed46828c6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80">
+<script type="application/ld+json">[{"@context":"http://schema.org","@type":"WebSite","publisher":{"@type":"Person","name":"Gwok Hiujin","description":"Bite the bullet.","image":"https://gwokhiujin.github.io/tx.jpg"},"url":"https://gwokhiujin.github.io","image":"https://gwokhiujin.github.io/tx.jpg","description":"Gwok Hiujin's Blog","author":{"@type":"Person","name":"Gwok Hiujin","description":"Bite the bullet.","image":"https://gwokhiujin.github.io/tx.jpg"},"inLanguage":{"@type":"Language","alternateName":"en"}},{"@context":"http://schema.org","@type":"Article","articleSection":"学校学习 - Semester 5","url":"https://gwokhiujin.github.io/2022/07/17/%E8%A7%A3%E6%9E%90%E7%BC%96%E8%AF%91%E5%89%8D%E7%AB%AFVisitor%E6%9E%84%E9%80%A0/","headline":"解析编译前端Visitor构造","image":"https://images.unsplash.com/photo-1642233104906-18ed46828c6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80","datePublished":"2022-07-17T01:18:56.000Z","dateModified":"2022-07-18T07:20:25.299Z","keywords":"编译技术,编译前端","description":"Gwok Hiujin's Blog","publisher":{"@type":"Organization","name":"Gwok Hiujin's Blog","logo":{"@type":"ImageObject","url":"https://gwokhiujin.github.io/tx.jpg"}},"author":{"@type":"Person","name":"Gwok Hiujin","description":"Bite the bullet.","image":"https://gwokhiujin.github.io/tx.jpg"},"inLanguage":{"@type":"Language","alternateName":"en"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://gwokhiujin.github.io/2022/07/17/%E8%A7%A3%E6%9E%90%E7%BC%96%E8%AF%91%E5%89%8D%E7%AB%AFVisitor%E6%9E%84%E9%80%A0/"},"thumbnailUrl":"https://images.unsplash.com/photo-1642233104906-18ed46828c6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80"}]</script><link rel="alternate" type="application/atom+xml" title="Gwok Hiujin's Blog" href="/atom.xml">
 <script async src="//www.googletagmanager.com/gtag/js?id=UA-00000000-0"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','UA-00000000-0');</script>
 <!-- hexo injector head_end start --><style is="theme">html{--inside-accent-color:#2a2b33;--inside-foreground-color:#363636;--inside-border-color:#e0e0e0;--inside-background:url(//www.toptal.com/designers/subtlepatterns/uploads/subtle_white_feathers.png);--inside-sidebar-background:#2a2b33;--inside-card-background:url(//www.toptal.com/designers/subtlepatterns/uploads/topography.png);--inside-font-base:'Quicksand','PingFang SC';--inside-font-logo:Kaushan Script,'Quicksand','PingFang SC';--inside-font-menu:Baloo Bhaijaan,'Quicksand','PingFang SC';--inside-font-heading:Carter One,'Quicksand','PingFang SC';--inside-font-label:Montserrat,'Quicksand','PingFang SC';--inside-font-code:'Inconsolata','monospace';--inside-font-print:-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;--inside-content-width:640px;--inside-highlight-00:#f7f9fb;--inside-highlight-01:#e5ebf1;--inside-highlight-02:#cbd6e2;--inside-highlight-03:#aabcce;--inside-highlight-04:#627e99;--inside-highlight-05:#405c79;--inside-highlight-06:#223b54;--inside-highlight-07:#0b1c2c;--inside-highlight-08:#bf8b56;--inside-highlight-09:#bfbf56;--inside-highlight-0a:#8bbf56;--inside-highlight-0b:#56bf8b;--inside-highlight-0c:#568bbf;--inside-highlight-0d:#8b56bf;--inside-highlight-0e:#bf568b;--inside-highlight-0f:#bf5656;--inside-card-color:#363636;--inside-accent-color-005:rgba(42,43,51,.05);--inside-accent-color-01:rgba(42,43,51,.1);--inside-accent-color-02:rgba(42,43,51,.2);--inside-accent-color-04:rgba(42,43,51,.4);--inside-accent-color-08:rgba(42,43,51,.8)}</style><script src="/theme.9ecc9ab1.js"></script><link href="//fonts.googleapis.com/css?family=Baloo+Bhaijaan|Inconsolata|Quicksand|Montserrat|Merienda|Lobster|Carter+One|Kaushan+Script" rel="stylesheet"></link><link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
