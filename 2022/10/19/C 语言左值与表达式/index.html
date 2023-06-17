@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="en"><head><!-- hexo injector head_begin start -->
+<script src="/config.88714ed4202382606b66.js"></script>
+<!-- hexo injector head_begin end -->
+<meta charset="utf-8">
+<title>『C系统级编程』C语言左值与表达式 - Gwok Hiujin's Blog</title>
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+<link rel="canonical" href="https://gwokhiujin.github.io/2022/10/19/C%20%E8%AF%AD%E8%A8%80%E5%B7%A6%E5%80%BC%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+
+<meta name="description" content="表达式 在 C 语言中，由一系列操作符和操作对象组成的一个序列被称之为表达式（Exp）。它们具有如下的分类：  基础表达式  标识符（Identifier）：变量名或函数名 常量（Constant） 字符串 括号：也就是说，(Exp) == Exp 泛型选择表达式  在程序设计中，泛型编程（generic programming）指那些没有特定类型，但是一旦指定一种类型，就可以转换成指定类型的代">
+<meta property="og:type" content="website">
+<meta property="og:title" content="『C系统级编程』C语言左值与表达式">
+<meta property="og:url" content="https://gwokhiujin.github.io/2022/10/19/C%20%E8%AF%AD%E8%A8%80%E5%B7%A6%E5%80%BC%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Gwok Hiujin's Blog">
+<meta property="og:description" content="表达式 在 C 语言中，由一系列操作符和操作对象组成的一个序列被称之为表达式（Exp）。它们具有如下的分类：  基础表达式  标识符（Identifier）：变量名或函数名 常量（Constant） 字符串 括号：也就是说，(Exp) == Exp 泛型选择表达式  在程序设计中，泛型编程（generic programming）指那些没有特定类型，但是一旦指定一种类型，就可以转换成指定类型的代">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.unsplash.com/photo-1637597384655-e3c8ca310502?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=774&amp;q=80">
+<meta property="article:published_time" content="2022-10-19T22:35:42.000Z">
+<meta property="article:modified_time" content="2023-05-12T17:10:28.238Z">
+<meta property="article:author" content="Gwok Hiujin">
+<meta property="article:tag" content="C语言">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1637597384655-e3c8ca310502?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=774&amp;q=80">
+<script type="application/ld+json">[{"@context":"http://schema.org","@type":"WebSite","publisher":{"@type":"Person","name":"Gwok Hiujin","description":"The Bird of Hermes is my name, eating my wings to make me tame.","image":"https://gwokhiujin.github.io/images/tx.jpg"},"url":"https://gwokhiujin.github.io","image":"https://gwokhiujin.github.io/images/tx.jpg","description":"Gwok Hiujin's Blog","author":{"@type":"Person","name":"Gwok Hiujin","description":"The Bird of Hermes is my name, eating my wings to make me tame.","image":"https://gwokhiujin.github.io/images/tx.jpg"},"inLanguage":{"@type":"Language","alternateName":"en"}},{"@context":"http://schema.org","@type":"Article","articleSection":"C语言系统级编程","url":"https://gwokhiujin.github.io/2022/10/20/C%20%E8%AF%AD%E8%A8%80%E5%B7%A6%E5%80%BC%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F/","headline":"『C系统级编程』C语言左值与表达式","image":"https://images.unsplash.com/photo-1637597384655-e3c8ca310502?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80","datePublished":"2022-10-19T22:35:42.000Z","dateModified":"2023-05-12T17:10:28.238Z","keywords":"C语言","description":"Gwok Hiujin's Blog","publisher":{"@type":"Organization","name":"Gwok Hiujin's Blog","logo":{"@type":"ImageObject","url":"https://gwokhiujin.github.io/images/tx.jpg"}},"author":{"@type":"Person","name":"Gwok Hiujin","description":"The Bird of Hermes is my name, eating my wings to make me tame.","image":"https://gwokhiujin.github.io/images/tx.jpg"},"inLanguage":{"@type":"Language","alternateName":"en"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://gwokhiujin.github.io/2022/10/20/C%20%E8%AF%AD%E8%A8%80%E5%B7%A6%E5%80%BC%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F/"},"thumbnailUrl":"https://images.unsplash.com/photo-1637597384655-e3c8ca310502?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"}]</script><link rel="alternate" type="application/atom+xml" title="Gwok Hiujin's Blog" href="/atom.xml">
+<script async="" src="//www.googletagmanager.com/gtag/js?id=UA-258462752-1"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','UA-258462752-1');</script>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<style is="theme">html{--inside-accent-color:#607D8B;--inside-foreground-color:#363636;--inside-border-color:#e0e0e0;--inside-background:url(//www.toptal.com/designers/subtlepatterns/uploads/subtle_white_feathers.png);--inside-sidebar-background:#607D8B;--inside-card-background:url(//www.toptal.com/designers/subtlepatterns/uploads/topography.png);--inside-font-base:'Quicksand','Noto Serif SC';--inside-font-logo:Kaushan Script,'Quicksand','Noto Serif SC';--inside-font-menu:Baloo Bhaijaan,'Quicksand','Noto Serif SC';--inside-font-heading:Poltawski Nowy,'Quicksand','Noto Serif SC';--inside-font-label:Montserrat,'Quicksand','Noto Serif SC';--inside-font-code:'Inconsolata','monospace';--inside-font-print:-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;--inside-content-width:720px;--inside-highlight-00:#f7f9fb;--inside-highlight-01:#e5ebf1;--inside-highlight-02:#cbd6e2;--inside-highlight-03:#aabcce;--inside-highlight-04:#627e99;--inside-highlight-05:#405c79;--inside-highlight-06:#223b54;--inside-highlight-07:#0b1c2c;--inside-highlight-08:#bf8b56;--inside-highlight-09:#bfbf56;--inside-highlight-0a:#8bbf56;--inside-highlight-0b:#56bf8b;--inside-highlight-0c:#568bbf;--inside-highlight-0d:#8b56bf;--inside-highlight-0e:#bf568b;--inside-highlight-0f:#bf5656;--inside-card-color:#363636;--inside-accent-color-005:rgba(96,125,139,.05);--inside-accent-color-01:rgba(96,125,139,.1);--inside-accent-color-02:rgba(96,125,139,.2);--inside-accent-color-04:rgba(96,125,139,.4);--inside-accent-color-08:rgba(96,125,139,.8)}</style><script src="/theme.9ecc9ab1.js"></script><link href="//fonts.googleapis.com/css?family=Baloo+Bhaijaan|Inconsolata|Quicksand|Montserrat|Poltawski+Nowy|Kaushan+Script|Noto+Serif+SC:wght@400;700;900&amp;display=swap" rel="stylesheet"><link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="/cipher.0329a0a9.js"></script>
+
+<script src="/palette.ead17218.js"></script>
+<link href="/styles.91e7dfca63c7c151daa6.css" rel="stylesheet"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><meta name="theme-color" content=""><script type="application/json" is="state">{&q;api/MjAyMi8xMC8xOS9DIOivreiogOW3puWAvOS4juihqOi+vuW8jw.json&q;:{&q;title&q;:&q;『C系统级编程』C语言左值与表达式&q;,&q;date&q;:&q;2022-10-19T22:35:42.000Z&q;,&q;date_formatted&q;:{&q;ll&q;:&q;Oct 19, 2022&q;,&q;L&q;:&q;10/19/2022&q;,&q;MM-DD&q;:&q;10-19&q;},&q;thumbnail&q;:&q;https://images.unsplash.com/photo-1637597384655-e3c8ca310502?ixlib=rb-4.0.3&a;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&a;auto=format&a;fit=crop&a;w=774&a;q=80&q;,&q;link&q;:&q;2022/10/19/C 语言左值与表达式&q;,&q;comments&q;:true,&q;tags&q;:[&q;C语言&q;],&q;categories&q;:[&q;C语言系统级编程&q;],&q;updated&q;:&q;2023-05-12T17:10:28.238Z&q;,&q;content&q;:&q;&l;hr&g;\n&l;h2 id=\&q;表达式\&q;&g;表达式&l;a title=\&q;#表达式\&q; href=\&q;#表达式\&q;&g;&l;/a&g;&l;/h2&g;\n&l;p&g;在 C 语言中，由一系列&l;strong&g;操作符&l;/strong&g;和&l;strong&g;操作对象&l;/strong&g;组成的一个序列被称之为表达式（Exp）。它们具有如下的分类：&l;/p&g;\n&l;ul&g;\n&l;li&g;&l;strong&g;基础表达式&l;/strong&g;\n&l;ul&g;\n&l;li&g;标识符（Identifier）：变量名或函数名&l;/li&g;\n&l;li&g;常量（Constant）&l;/li&g;\n&l;li&g;字符串&l;/li&g;\n&l;li&g;括号：也就是说，(Exp) == Exp&l;/li&g;\n&l;li&g;泛型选择表达式\n&l;ul&g;\n&l;li&g;在程序设计中，泛型编程（generic programming）指那些没有特定类型，但是一旦指定一种类型，就可以转换成指定类型的代码。C11 新增了泛型选择表达式（generic selection expression），可根据表达式的类型（即表达式的类型是 int、double 还是其他类型）选择一个值。泛型选择表达式不是预处理器指令，但是在一些泛型编程中它常用作 #define 宏定义的一部分。&l;/li&g;\n&l;li&g;示例：&l;code&g;_Generic(x, int: 0, float: 1, double: 2, default: 3)&l;/code&g;&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;后缀表达式&l;/strong&g;：给定一个表达式 exp，其与后缀操作符结合构成的仍然是一个表达式\n&l;ul&g;\n&l;li&g;exp1[exp2]&l;/li&g;\n&l;li&g;exp.identifier&l;/li&g;\n&l;li&g;exp→identifier&l;/li&g;\n&l;li&g;exp++ / exp–&l;/li&g;\n&l;li&g;(TypeName){Initializer-list}\n&l;ul&g;\n&l;li&g;(int){2}, {int[3]}{1, 2, 3}&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;exp(argument list)\n&l;ul&g;\n&l;li&g;func(1, 2)&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;一元表达式&l;/strong&g;：给定一个表达式 exp，其与一元操作符结构构成的仍然是一个表达式\n&l;ul&g;\n&l;li&g;++exp / --exp&l;/li&g;\n&l;li&g;&a;amp;exp&l;/li&g;\n&l;li&g;*exp&l;/li&g;\n&l;li&g;+exp / -exp&l;/li&g;\n&l;li&g;~exp / !exp&l;/li&g;\n&l;li&g;sieof(exp) / sizeof exp / _Alignof(exp)&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;Cast表达式&l;/strong&g;\n&l;ul&g;\n&l;li&g;(TypeName)exp\n&l;ul&g;\n&l;li&g;(float)a&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;条件表达式&l;/strong&g;：两个表达式 + 条件操作符结构\n&l;ul&g;\n&l;li&g;&a;gt;, ≥, &a;lt;, ≤, ==, ≠&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;运算表达式&l;/strong&g;：两个表达式 + 运算操作符结构（包括位运算操作符、逻辑运算操作符）\n&l;ul&g;\n&l;li&g;+, -, *, /, %&l;/li&g;\n&l;li&g;&a;lt;&a;lt;, &a;gt;&a;gt;, &a;amp;, ^, |&l;/li&g;\n&l;li&g;&a;amp;&a;amp;, ||, exp1 ? exp2 : exp3&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;赋值表达式&l;/strong&g;：两个表达式 + 赋值运算操作符\n&l;ul&g;\n&l;li&g;=、*=、/=、%=、+=、-=、&a;lt;&a;lt;=、 &a;gt;&a;gt;=、&a;amp;=、^=、|=&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;逗号运算表达式&l;/strong&g;\n&l;ul&g;\n&l;li&g;exp1, exp2, …, exp_n\n&l;ul&g;\n&l;li&g;从左至右按将逗号分隔的表达式依次运算，整个表达式返回值和类型是最后一个表达式的返回值和类型&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;p&g;当然，多个表达式也可以组合成新的表达式。做分解的时候，我们总是从基础表达式开始分解。&l;/p&g;\n&l;p&g;&l;img src=\&q;https://s1.ax1x.com/2023/05/12/p9yylTI.jpg\&q; alt=\&q;p9yylTI.jpg\&q; loading=\&q;lazy\&q; class=\&q;φbp\&q;&g;&l;/p&g;\n&l;h3 id=\&q;左值（lvalue）\&q;&g;左值（lvalue）&l;a title=\&q;#左值（lvalue）\&q; href=\&q;#左值（lvalue）\&q;&g;&l;/a&g;&l;/h3&g;\n&l;p&g;左值是一个表达式，且这个表达式&l;strong&g;能够定位一个对象&l;/strong&g;：&l;/p&g;\n&l;p&g;&l;img src=\&q;https://s1.ax1x.com/2023/05/12/p9yy3kt.jpg\&q; alt=\&q;p9yy3kt.jpg\&q; loading=\&q;lazy\&q; class=\&q;φbp\&q;&g;&l;/p&g;\n&l;p&g;（只有这些可以）&l;/p&g;\n&l;p&g;因此就像之前讲过的那样，左值并不是 left value 而是 locator value。之所以叫左值是因为大多数情况下它都在等号（赋值语句）左边，但只有 &l;strong&g;Modifiable lvalue&l;/strong&g; 才能被放到等号左边。Modifiable lvalue 的条件是，如果一个 lvalue 定位到的对象内存满足以下条件：&l;/p&g;\n&l;ol&g;\n&l;li&g;变量类型不是数组变量类型&l;/li&g;\n&l;li&g;变量类型不是不完全类型&l;/li&g;\n&l;li&g;没有被 const 修饰&l;/li&g;\n&l;li&g;如果该对象类型是 struct / union，则成员的变量类型也没有被 const 修饰&l;/li&g;\n&l;/ol&g;\n&l;p&g;则说明该 lvalue 是一个 Modifiable lvalue，可以放到等号左边。能被放到等号左边的含义是能够被赋值。&l;/p&g;\n&l;h4 id=\&q;观察-lvalue\&q;&g;观察 lvalue&l;a title=\&q;#观察-lvalue\&q; href=\&q;#观察-lvalue\&q;&g;&l;/a&g;&l;/h4&g;\n&l;p&g;如果一个左值表达式在赋值表达式的等号左边：&l;/p&g;\n&l;ol&g;\n&l;li&g;若该左值是 Modifiable 的，则等待赋值；&l;/li&g;\n&l;li&g;若该左值是非 Modifiable 的，则编译出错。&l;/li&g;\n&l;/ol&g;\n&l;p&g;其他情况下，lvalue 表达式的观察方法如下：假设该左值定位的对象为 Obj（对应一个内存六元组，下面要用），则：&l;/p&g;\n&l;ol&g;\n&l;li&g;如果 lvalue 跟 &a;amp; 结合，则返回值：&a;lt;Address, Obj_T*&a;gt;&l;/li&g;\n&l;li&g;如果 lvalue 跟 sizeof 结合，则返回值：&a;lt;Size, size_t&a;gt;&l;/li&g;\n&l;li&g;其他情况，返回值为：&a;lt;Value, Value_Type&a;gt;&l;/li&g;\n&l;/ol&g;\n&l;h5 id=\&q;再谈-*exp-形式\&q;&g;再谈 *exp 形式&l;a title=\&q;#再谈-*exp-形式\&q; href=\&q;#再谈-*exp-形式\&q;&g;&l;/a&g;&l;/h5&g;\n&l;p&g;之前在定位内存的部分讲过 * 运算符如何定位内存，这里稍作补充。&l;/p&g;\n&l;p&g;&l;img src=\&q;https://s1.ax1x.com/2023/05/12/p9yyQ0A.jpg\&q; alt=\&q;p9yyQ0A.jpg\&q; loading=\&q;lazy\&q; class=\&q;φbp\&q;&g;&l;/p&g;\n&l;ul&g;\n&l;li&g;*p 的时候并不知道这块内存的 Name，只要直接定位以该编号开头的内存就好了。&l;/li&g;\n&l;li&g;只有指针类型的值能用 * 操作符进行间接定位。&l;/li&g;\n&l;li&g;指针变量 p + n\n&l;ul&g;\n&l;li&g;p + n 的 Value = p.value + sizeof(*p)*n&l;/li&g;\n&l;li&g;p + n 的 Value_Type 不变，还是 p.Value_Type&l;/li&g;\n&l;li&g;注意这个 n 可以是数字常量，也可以是一个&l;strong&g;返回值为合法的整数类型的表达式&l;/strong&g;&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;*(exp + n) &a;lt;==&a;gt; exp[n]&l;/strong&g;\n&l;ul&g;\n&l;li&g;要求 exp 的返回值类型是&l;strong&g;有效的指针类型&l;/strong&g;&l;/li&g;\n&l;li&g;可见：任何一个返回值为指针的表达式，蕴含着指向的那块内存为一个数组，元素为指针变量类型对应的变量类型，但大小未知\n&l;ul&g;\n&l;li&g;这意味着可能会发生溢出&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;注意这个 n 可以是数字常量，也可以是一个&l;strong&g;返回值为合法的整数类型的表达式&l;/strong&g;&l;/li&g;\n&l;li&g;⭐ 显然，通过这个规则可以递归地完成&l;strong&g;数组元素的定位&l;/strong&g;（即将数组元素转换为通过 * 运算符定位内存的过程）\n&l;ul&g;\n&l;li&g;这里放上这节课的课堂小测题，熟练了这条规则之后这些题就很容易了。&l;img src=\&q;https://s1.ax1x.com/2023/05/12/p9yy8tP.jpg\&q; alt=\&q;p9yy8tP.jpg\&q; loading=\&q;lazy\&q;&g;&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;&l;strong&g;趣闻&l;/strong&g;\n&l;ul&g;\n&l;li&g;当 n 为返回值为合法整数类型的表达式时，我们可以将这个形式化定义式子写成 E1[E2] &a;lt;==&a;gt; *((E1) + (E2))，我们并不会对 E1、E2 的对应次序做出要求，此时会产生一个很有意思的现象：&l;strong&g;a[1] &a;lt;==&a;gt; 1[a]&l;/strong&g;！这是可以正确通过编译的！\n&l;ul&g;\n&l;li&g;实际操作的时候不要这么写，会被打 O(∩_∩)O&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;li&g;两个指针相减\n&l;ul&g;\n&l;li&g;&l;img src=\&q;https://s1.ax1x.com/2023/05/12/p9yyMmd.jpg\&q; alt=\&q;p9yyMmd.jpg\&q; loading=\&q;lazy\&q; class=\&q;φbp\&q;&g;&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&l;h3 id=\&q;表达式的值\&q;&g;表达式的值&l;a title=\&q;#表达式的值\&q; href=\&q;#表达式的值\&q;&g;&l;/a&g;&l;/h3&g;\n&l;p&g;表达式的值可以形式化定义为： &a;lt;V, V_T&a;gt; 。&l;/p&g;\n&l;p&g;若观察到表达式为非数组变量类型，那么就可以按照观察 lvalue 的规则得到返回值；&l;/p&g;\n&l;p&g;若观察到表达式为数组类型，则返回值是数组第一个元素的首地址，返回值类型是元素变量类型对应的指针类型。&l;/p&g;\n&q;,&q;prev&q;:{&q;title&q;:&q;『NJU程序分析』数据流分析理论基础(FD)&q;,&q;link&q;:&q;2022/10/28/『NJU 程序分析』数据流分析(FD)&q;},&q;next&q;:{&q;title&q;:&q;『C系统级编程』深入了解表达式的 Evaluation&q;,&q;link&q;:&q;2022/10/19/『C语言系统级编程』深入了解表达式的evaluation&q;},&q;plink&q;:&q;https://gwokhiujin.github.io/2022/10/19/C 语言左值与表达式/&q;,&q;toc&q;:[{&q;id&q;:&q;表达式&q;,&q;title&q;:&q;表达式&q;,&q;index&q;:&q;1&q;,&q;children&q;:[{&q;id&q;:&q;左值（lvalue）&q;,&q;title&q;:&q;左值（lvalue）&q;,&q;index&q;:&q;1.1&q;,&q;children&q;:[{&q;id&q;:&q;观察-lvalue&q;,&q;title&q;:&q;观察 lvalue&q;,&q;index&q;:&q;1.1.1&q;}]},{&q;id&q;:&q;表达式的值&q;,&q;title&q;:&q;表达式的值&q;,&q;index&q;:&q;1.2&q;}]}],&q;reward&q;:true,&q;copyright&q;:{&q;author&q;:&q;Gwok Hiujin&q;,&q;link&q;:&q;&l;a href=\&q;https://gwokhiujin.github.io/2022/10/19/C 语言左值与表达式/\&q; title=\&q;『C系统级编程』C语言左值与表达式\&q;&g;https://gwokhiujin.github.io/2022/10/19/C 语言左值与表达式/&l;/a&g;&q;,&q;license&q;:&q;Attribution-NonCommercial-NoDerivatives 4.0 International (&l;a href=\\\&q;https://creativecommons.org/licenses/by-nc-sa/4.0/\\\&q; rel=\\\&q;external nofollow\\\&q; target=\\\&q;_blank\\\&q;&g;CC BY-NC-ND 4.0&l;/a&g;)&q;,&q;published&q;:&q;October 19, 2022&q;,&q;updated&q;:&q;May 12, 2023&q;},&q;reading_time&q;:&q;1428 words in 7 min&q;}}</script></head>
+<body lang="en"><!-- hexo injector body_begin start --><is-a class="φh" ng-version="12.1.0"><is-k class="φcu"><div class="φdg"><section class="φdh"><header class="φcv"><i class="φda"></i><!----><!----><img width="160" draggable="false" class="φcx φcw" src="/images/tx.jpg" alt="Gwok Hiujin" title="Gwok Hiujin"><!----><a href="" class="φcz">Gwok Hiujin</a><p class="φcy">The Bird of Hermes is my name, eating my wings to make me tame.</p></header><div class="φdl"><a routerlink="/archives" class="φdm" href="/archives"><span>28</span><span>Archives</span></a><a class="φdm" href="/categories/CSA"><span>6</span><span>Categories</span></a><!----><a routerlink="/tags" class="φdm" href="/tags"><span>23</span><span>Tags</span></a><!----></div><!----><nav class="φdi"><a class="φdj" href="/">🏠Home</a><!----><!----><!----><a class="φdj" href="/search">🔍Search</a><!----><!----><!----><a class="φdj" href="/friends">🐱Friends</a><!----><!----><!----><a class="φdj" href="/cnblogs">🏮CN-blogs</a><!----><!----><!----><a class="φdj" href="/About">🧠About-me</a><!----><!----><!----><!----></nav><!----><div issnippet="" class="φb"><is-palette col="5" theme="#673ab7,#3f51b5,#2196f3,#009688,#4caf50,#ff9800,#ff5722,#795548,#607D8B,#2a2b33"></is-palette></div><div issnippet="" class="φb"></div><div issnippet="" class="φb"><is-palette2></is-palette2></div><!----><!----><!----></section><footer class="φdb φdc"><div class="φde"><!----><a target="_blank" rel="external nofollow noopener" class="φdf" title="Email" href="mailto:guozi1625113688@163.com"><i class="iκ-email"></i></a><!----><!----><!----><a target="_blank" rel="external nofollow noopener" class="φdf" title="Github" href="https://github.com/GwokHiujin"><i class="iκ-github"></i></a><!----><!----><!----><a target="_blank" rel="external nofollow noopener" class="φdf" title="RSS" href="/atom.xml"><i class="iκ-feed"></i></a><!----><!----><!----></div><!----><p class="φe">© 2022 🐦 <a href="">Gwok Hiujin</a></p><!----><p class="φe"><span class="φdd">Powered by <a href="https://hexo.io" target="_blank" rel="external nofollow noopener">Hexo</a></span><!----><span class="φdd">Theme - <a href="https://github.com/ikeq/hexo-theme-inside" target="_blank" rel="external nofollow noopener">Inside</a></span><!----></p><!----><p class="φe"><span id="busuanzi_container_site_uv" style="display:none">Total <span id="busuanzi_value_site_uv"></span> visitors | </span><span id="busuanzi_container_site_pv" style="display:none"><span id="busuanzi_value_site_pv"></span> Views</span></p><!----></footer></div></is-k><div class="φj"><div class="φi"><div class="φn"><main class="φm"><router-outlet></router-outlet><is-r class="φet"><header class="φfd φfn" style="background-image:url(https://images.unsplash.com/photo-1637597384655-e3c8ca310502?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=774&amp;q=80);background-color:;"><div class="φfm"><!----><p class="φff"><span class="φfg φfk">Oct 19, 2022</span><a class="φfg φfi" href="/categories/C%E8%AF%AD%E8%A8%80%E7%B3%BB%E7%BB%9F%E7%BA%A7%E7%BC%96%E7%A8%8B">C语言系统级编程</a><!----><span class="φfg φfj">1428 words in 7 min</span><!----><!----></p><hr class="φfo"><!----><h1 class="φfp">『C系统级编程』C语言左值与表达式</h1><!----></div></header><article itemscope="" itemtype="http://schema.org/Article" class="φew" data-title="『C系统级编程』C语言左值与表达式"><div itemprop="articleBody" issnippet="" iszoomable="" class="φe"><hr>
+<h2 id="表达式">表达式<a title="#表达式" href="#表达式"></a></h2>
+<p>在 C 语言中，由一系列<strong>操作符</strong>和<strong>操作对象</strong>组成的一个序列被称之为表达式（Exp）。它们具有如下的分类：</p>
+<ul>
+<li><strong>基础表达式</strong>
+<ul>
+<li>标识符（Identifier）：变量名或函数名</li>
+<li>常量（Constant）</li>
+<li>字符串</li>
+<li>括号：也就是说，(Exp) == Exp</li>
+<li>泛型选择表达式
+<ul>
+<li>在程序设计中，泛型编程（generic programming）指那些没有特定类型，但是一旦指定一种类型，就可以转换成指定类型的代码。C11 新增了泛型选择表达式（generic selection expression），可根据表达式的类型（即表达式的类型是 int、double 还是其他类型）选择一个值。泛型选择表达式不是预处理器指令，但是在一些泛型编程中它常用作 #define 宏定义的一部分。</li>
+<li>示例：<code>_Generic(x, int: 0, float: 1, double: 2, default: 3)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>后缀表达式</strong>：给定一个表达式 exp，其与后缀操作符结合构成的仍然是一个表达式
+<ul>
+<li>exp1[exp2]</li>
+<li>exp.identifier</li>
+<li>exp→identifier</li>
+<li>exp++ / exp–</li>
+<li>(TypeName){Initializer-list}
+<ul>
+<li>(int){2}, {int[3]}{1, 2, 3}</li>
+</ul>
+</li>
+<li>exp(argument list)
+<ul>
+<li>func(1, 2)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>一元表达式</strong>：给定一个表达式 exp，其与一元操作符结构构成的仍然是一个表达式
+<ul>
+<li>++exp / --exp</li>
+<li>&amp;exp</li>
+<li>*exp</li>
+<li>+exp / -exp</li>
+<li>~exp / !exp</li>
+<li>sieof(exp) / sizeof exp / _Alignof(exp)</li>
+</ul>
+</li>
+<li><strong>Cast表达式</strong>
+<ul>
+<li>(TypeName)exp
+<ul>
+<li>(float)a</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>条件表达式</strong>：两个表达式 + 条件操作符结构
+<ul>
+<li>&gt;, ≥, &lt;, ≤, ==, ≠</li>
+</ul>
+</li>
+<li><strong>运算表达式</strong>：两个表达式 + 运算操作符结构（包括位运算操作符、逻辑运算操作符）
+<ul>
+<li>+, -, *, /, %</li>
+<li>&lt;&lt;, &gt;&gt;, &amp;, ^, |</li>
+<li>&amp;&amp;, ||, exp1 ? exp2 : exp3</li>
+</ul>
+</li>
+<li><strong>赋值表达式</strong>：两个表达式 + 赋值运算操作符
+<ul>
+<li>=、*=、/=、%=、+=、-=、&lt;&lt;=、 &gt;&gt;=、&amp;=、^=、|=</li>
+</ul>
+</li>
+<li><strong>逗号运算表达式</strong>
+<ul>
+<li>exp1, exp2, …, exp_n
+<ul>
+<li>从左至右按将逗号分隔的表达式依次运算，整个表达式返回值和类型是最后一个表达式的返回值和类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>当然，多个表达式也可以组合成新的表达式。做分解的时候，我们总是从基础表达式开始分解。</p>
+<p><img src="https://s1.ax1x.com/2023/05/12/p9yylTI.jpg" alt="p9yylTI.jpg" loading="lazy" class="φbp"></p>
+<h3 id="左值（lvalue）">左值（lvalue）<a title="#左值（lvalue）" href="#左值（lvalue）"></a></h3>
+<p>左值是一个表达式，且这个表达式<strong>能够定位一个对象</strong>：</p>
+<p><img src="https://s1.ax1x.com/2023/05/12/p9yy3kt.jpg" alt="p9yy3kt.jpg" loading="lazy" class="φbp"></p>
+<p>（只有这些可以）</p>
+<p>因此就像之前讲过的那样，左值并不是 left value 而是 locator value。之所以叫左值是因为大多数情况下它都在等号（赋值语句）左边，但只有 <strong>Modifiable lvalue</strong> 才能被放到等号左边。Modifiable lvalue 的条件是，如果一个 lvalue 定位到的对象内存满足以下条件：</p>
+<ol>
+<li>变量类型不是数组变量类型</li>
+<li>变量类型不是不完全类型</li>
+<li>没有被 const 修饰</li>
+<li>如果该对象类型是 struct / union，则成员的变量类型也没有被 const 修饰</li>
+</ol>
+<p>则说明该 lvalue 是一个 Modifiable lvalue，可以放到等号左边。能被放到等号左边的含义是能够被赋值。</p>
+<h4 id="观察-lvalue">观察 lvalue<a title="#观察-lvalue" href="#观察-lvalue"></a></h4>
+<p>如果一个左值表达式在赋值表达式的等号左边：</p>
+<ol>
+<li>若该左值是 Modifiable 的，则等待赋值；</li>
+<li>若该左值是非 Modifiable 的，则编译出错。</li>
+</ol>
+<p>其他情况下，lvalue 表达式的观察方法如下：假设该左值定位的对象为 Obj（对应一个内存六元组，下面要用），则：</p>
+<ol>
+<li>如果 lvalue 跟 &amp; 结合，则返回值：&lt;Address, Obj_T*&gt;</li>
+<li>如果 lvalue 跟 sizeof 结合，则返回值：&lt;Size, size_t&gt;</li>
+<li>其他情况，返回值为：&lt;Value, Value_Type&gt;</li>
+</ol>
+<h5 id="再谈-*exp-形式">再谈 *exp 形式<a title="#再谈-*exp-形式" href="#再谈-*exp-形式"></a></h5>
+<p>之前在定位内存的部分讲过 * 运算符如何定位内存，这里稍作补充。</p>
+<p><img src="https://s1.ax1x.com/2023/05/12/p9yyQ0A.jpg" alt="p9yyQ0A.jpg" loading="lazy" class="φbp"></p>
+<ul>
+<li>*p 的时候并不知道这块内存的 Name，只要直接定位以该编号开头的内存就好了。</li>
+<li>只有指针类型的值能用 * 操作符进行间接定位。</li>
+<li>指针变量 p + n
+<ul>
+<li>p + n 的 Value = p.value + sizeof(*p)*n</li>
+<li>p + n 的 Value_Type 不变，还是 p.Value_Type</li>
+<li>注意这个 n 可以是数字常量，也可以是一个<strong>返回值为合法的整数类型的表达式</strong></li>
+</ul>
+</li>
+<li><strong>*(exp + n) &lt;==&gt; exp[n]</strong>
+<ul>
+<li>要求 exp 的返回值类型是<strong>有效的指针类型</strong></li>
+<li>可见：任何一个返回值为指针的表达式，蕴含着指向的那块内存为一个数组，元素为指针变量类型对应的变量类型，但大小未知
+<ul>
+<li>这意味着可能会发生溢出</li>
+</ul>
+</li>
+<li>注意这个 n 可以是数字常量，也可以是一个<strong>返回值为合法的整数类型的表达式</strong></li>
+<li>⭐ 显然，通过这个规则可以递归地完成<strong>数组元素的定位</strong>（即将数组元素转换为通过 * 运算符定位内存的过程）
+<ul>
+<li>这里放上这节课的课堂小测题，熟练了这条规则之后这些题就很容易了。<img src="https://s1.ax1x.com/2023/05/12/p9yy8tP.jpg" alt="p9yy8tP.jpg" loading="lazy"></li>
+</ul>
+</li>
+<li><strong>趣闻</strong>
+<ul>
+<li>当 n 为返回值为合法整数类型的表达式时，我们可以将这个形式化定义式子写成 E1[E2] &lt;==&gt; *((E1) + (E2))，我们并不会对 E1、E2 的对应次序做出要求，此时会产生一个很有意思的现象：<strong>a[1] &lt;==&gt; 1[a]</strong>！这是可以正确通过编译的！
+<ul>
+<li>实际操作的时候不要这么写，会被打 O(∩_∩)O</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>两个指针相减
+<ul>
+<li><img src="https://s1.ax1x.com/2023/05/12/p9yyMmd.jpg" alt="p9yyMmd.jpg" loading="lazy" class="φbp"></li>
+</ul>
+</li>
+</ul>
+<h3 id="表达式的值">表达式的值<a title="#表达式的值" href="#表达式的值"></a></h3>
+<p>表达式的值可以形式化定义为： &lt;V, V_T&gt; 。</p>
+<p>若观察到表达式为非数组变量类型，那么就可以按照观察 lvalue 的规则得到返回值；</p>
+<p>若观察到表达式为数组类型，则返回值是数组第一个元素的首地址，返回值类型是元素变量类型对应的指针类型。</p>
+</div><is-e class="φu"><!----><ul class="φy"><li class="φw"><strong class="φx">Author<span>:</span></strong><p class="φv">Gwok Hiujin</p></li><li class="φw"><strong class="φx">Copyright<span>:</span></strong><p class="φv">Attribution-NonCommercial-NoDerivatives 4.0 International (<a href="unsafe:\&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/\&quot;" rel="\&quot;external" target="\&quot;_blank\&quot;">CC BY-NC-ND 4.0</a>)</p></li><li class="φw"><strong class="φx">Link<span>:</span></strong><p class="φv"><a href="https://gwokhiujin.github.io/2022/10/19/C 语言左值与表达式/" title="『C系统级编程』C语言左值与表达式">https://gwokhiujin.github.io/2022/10/19/C 语言左值与表达式/</a></p></li><li class="φw"><strong class="φx">Published<span>:</span></strong><p class="φv">October 19, 2022</p></li><li class="φw"><strong class="φx">Updated<span>:</span></strong><p class="φv">May 12, 2023</p></li><!----></ul><!----></is-e><!----><is-j class="φcm"><p class="φcr">Buy me a cup of coffee ☕.</p><div class="φco"><div class="φct"><a class="φcs φa iκ-wechat" style="color:;"></a><!----></div><div class="φcq"><!----></div></div></is-j><!----><div><div issnippet="" class="φb"><link href="//cdn.jsdelivr.net/gh/fiteen/fiteen.github.io@v0.1.1/clipboard.css" rel="stylesheet"></div><!----></div><!----></article><footer class="φex"><div class="φfc"><is-l class="φdo"><a class="φdp" href="/tags/C%E8%AF%AD%E8%A8%80">C语言</a></is-l><!----></div><!----><div class="φey"><a class="φez φfb" href="/2022/10/28/%E3%80%8ENJU%20%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E3%80%8F%E6%95%B0%E6%8D%AE%E6%B5%81%E5%88%86%E6%9E%90%28FD%29">『NJU程序分析』数据流分析理论基础(FD)</a><!----><a class="φez φfa" href="/2022/10/19/%E3%80%8EC%E8%AF%AD%E8%A8%80%E7%B3%BB%E7%BB%9F%E7%BA%A7%E7%BC%96%E7%A8%8B%E3%80%8F%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84evaluation">『C系统级编程』深入了解表达式的 Evaluation</a><!----></div><!----></footer><is-d class="φt"><div issnippet=""><div id="vcomment"></div></div><!----></is-d><!----><!----><!----></is-r><!----></main><!----></div></div></div><is-f class="φz"><div class="φbi"><span class="φa iκ-up"></span><span class="φa iκ-down"></span><!----><span class="φa iκ-toc"></span><!----><span class="φa iκ-search"></span><!----></div><div class="φbb φbc"><svg class="φbh"><defs><filter id="dp"><feGaussianBlur in="SourceGraphic" stdDeviation="2"></feGaussianBlur></filter></defs><circle filter="url(#dp)" fill="rgba(0,0,0,.3)" cx="50%" cy="52%" r="44%"></circle><circle cx="50%" cy="50%" r="44%" class="φbd"></circle><circle cx="50%" cy="50%" r="48%" class="φbg" stroke-dasharray="0% 314.15926%"></circle><!----><g class="φbe"><circle r=".2rem" cx="0" cy="-.8rem"></circle><circle r=".2rem"></circle><circle r=".2rem" cx="0" cy=".8rem"></circle></g><!----></svg></div></is-f><is-m class="φdq"><div class="φds φdt"><a class="φdv"><span class="φdx">1 </span><!----><span class="φdy">表达式</span></a><div class="φds"><a class="φdv"><span class="φdx">1.1 </span><!----><span class="φdy">左值（lvalue）</span></a><div class="φds"><a class="φdv"><span class="φdx">1.1.1 </span><!----><span class="φdy">观察 lvalue</span></a><!----></div><!----><!----><!----></div><div class="φds"><a class="φdv"><span class="φdx">1.2 </span><!----><span class="φdy">表达式的值</span></a><!----></div><!----><!----><!----></div><!----></is-m><!----><!----></is-a><!-- hexo injector body_begin end --><!-- hexo injector body_end start --><script src="//cdnjs.loli.net/ajax/libs/jquery/3.2.1/jquery.min.js"></script><script src="//blog.oniuo.com/theme.js"></script><script src="//blog.oniuo.com/wc.cc9a2092fece1d80bf3b.js"></script><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script src="/runtime.1ed960b0635ea0669f87.js"></script><script src="/polyfills.b7bf56fc45f931a8b83e.js"></script><script src="/main.543c891b4aad158701f3.js"></script><!-- hexo injector body_end end -->
+
+</body></html>
