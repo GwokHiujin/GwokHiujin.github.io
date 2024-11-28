@@ -2,9 +2,7 @@
 
 - type: github
   icon: "fab fa-github"
-
-- type: twitter
-  icon: "fa-brands fa-x-twitter"
+  url: "https://github.com/GwokHiujin"
 
 - type: email
   icon: "fas fa-envelope"
