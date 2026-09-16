@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>Oleander</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;600;700&display=swap");
+      :root { --border: #ededed; --muted: #666; --paper: #fcfcfc; --ink: #161616; }
+      * { box-sizing: border-box; color: var(--ink); font: inherit; }
+      html, body { min-height: 100%; }
+      body { align-items: center; background: var(--paper); display: grid; font: .9rem/1.5 "Noto Sans CJK HK", "Noto Sans HK", "Noto Sans", sans-serif; justify-content: center; margin: 0; padding: 3rem 1.5rem; }
+      [hidden] { display: none !important; }
+      .gate { border: 1px solid var(--border); border-radius: .75rem; box-shadow: 0 1px 2px var(--border); max-width: 60ch; padding: 3rem; width: min(100%, 60ch); }
+      .path, .hint, .error { color: var(--muted); font-size: .76rem; }
+      .path { margin-top: 0; }
+      h1 { font-weight: 700; margin: 1.5em 0; }
+      form { display: grid; gap: .75rem; }
+      input { background: #f7f7f7; border: 1px solid var(--border); border-radius: .375rem; padding: .75rem; width: 100%; }
+      input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+      button { background: var(--ink); border: 1px solid var(--ink); border-radius: .375rem; color: var(--paper); cursor: pointer; justify-self: start; padding: .75rem 1.5rem; }
+      button:hover { opacity: .82; }
+      .error { min-height: 1.5em; margin: 0; }
+      a { border-bottom: 1px dotted; text-decoration: none; }
+      @media (max-width: 600px) { .gate { padding: 1.5rem; } }
+    </style>
+    <noscript><style>#oleander-gate { display: block !important; }</style></noscript>
+  </head>
+  <body>
+    <section class="gate" id="oleander-gate" aria-labelledby="oleander-gate-title" hidden>
+      <p class="path" aria-hidden="true">Gwok Hiujin / Oleander /</p>
+      <h1 id="oleander-gate-title">Oleander</h1>
+      <form id="oleander-gate-form">
+        <label for="oleander-password">Password</label>
+        <input id="oleander-password" name="password" type="password" minlength="5" maxlength="5" pattern="[a-z]{5}" autocomplete="current-password" autocapitalize="none" spellcheck="false" required>
+        <p class="hint">请输入 5 个小写英文字母。你知道的，就是那 5 个小写英文字母。</p>
+        <p class="error" id="oleander-gate-error" role="status" aria-live="polite"></p>
+        <button type="submit">Enter</button>
+      </form>
+      <p><a href="/">../</a></p>
+      <noscript><p>需要启用 JavaScript 才能解密这个分类。</p></noscript>
+    </section>
+    <script id="oleander-payload" type="application/json">{"version":1,"iterations":600000,"salt":"BegOHnjGjvStJBvB90lQBw==","iv":"Gs2ujKX0coXn91FS","data":"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"}</script>
+    <script>
+      (() => {
+        "use strict";
+        const storageKey = "gwokhiujin:oleander:derived-key";
+        const payload = JSON.parse(document.getElementById("oleander-payload").textContent);
+        const gate = document.getElementById("oleander-gate");
+        const form = document.getElementById("oleander-gate-form");
+        const input = document.getElementById("oleander-password");
+        const error = document.getElementById("oleander-gate-error");
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+
+        const fromBase64 = (value) => Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
+        const toBase64 = (value) => {
+          let binary = "";
+          for (const byte of value) binary += String.fromCharCode(byte);
+          return btoa(binary);
+        };
+
+        const deriveKey = async (password) => {
+          const material = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+          const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: fromBase64(payload.salt), iterations: payload.iterations, hash: "SHA-256" }, material, 256);
+          return new Uint8Array(bits);
+        };
+
+        const decrypt = async (keyBytes) => {
+          const key = await crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, ["decrypt"]);
+          const plaintext = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromBase64(payload.iv), tagLength: 128 }, key, fromBase64(payload.data));
+          return decoder.decode(plaintext);
+        };
+
+        const render = (html) => {
+          document.open();
+          document.write(html);
+          document.close();
+        };
+
+        const restore = async () => {
+          try {
+            const saved = sessionStorage.getItem(storageKey);
+            if (!saved) return false;
+            render(await decrypt(fromBase64(saved)));
+            return true;
+          } catch (_) {
+            sessionStorage.removeItem(storageKey);
+            return false;
+          }
+        };
+
+        const unlockOrShowGate = async () => {
+          if (await restore()) return;
+          gate.hidden = false;
+          input.focus({ preventScroll: true });
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", unlockOrShowGate, { once: true });
+        } else {
+          unlockOrShowGate();
+        }
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          error.textContent = "";
+          if (!/^[a-z]{5}$/.test(input.value)) {
+            error.textContent = "请输入 5 个小写英文字母。";
+            input.focus();
+            return;
+          }
+          try {
+            const keyBytes = await deriveKey(input.value);
+            const html = await decrypt(keyBytes);
+            sessionStorage.setItem(storageKey, toBase64(keyBytes));
+            render(html);
+          } catch (_) {
+            error.textContent = "密码不正确。";
+            input.select();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

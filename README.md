@@ -13,22 +13,44 @@ The GitHub Actions workflow installs the pinned Hugo version, builds the site, a
 
 ## Content layout
 
-Every post belongs under exactly one of these top-level sections:
+Public posts belong under either of these top-level sections:
 
 ```text
 content/
 ├── Apodidae/
-├── Oleander/
 └── Taoasis/
 ```
 
 Add a normal post as `content/Apodidae/my-post.md`. For a post with child routes, make the root a branch bundle so category pages show only the root entry:
 
 ```text
-content/Oleander/A_Comic/
-├── _index.md  # /Oleander/A_Comic/
-├── 01.md      # /Oleander/A_Comic/01/
-└── 02.md      # /Oleander/A_Comic/02/
+content/Apodidae/A_Comic/
+├── _index.md  # /Apodidae/A_Comic/
+├── 01.md      # /Apodidae/A_Comic/01/
+└── 02.md      # /Apodidae/A_Comic/02/
 ```
 
-The `Oleander` section uses a client-side access gate. Because GitHub Pages is static, this is a privacy prompt rather than server-side security: generated page source remains publicly retrievable.
+## Encrypted Oleander section
+
+Oleander source and rendered HTML live outside this public repository in the sibling `Oleander` directory:
+
+```text
+BlogPage/
+├── GwokHiujin.github.io/       # public repository
+└── Oleander/                   # private local files
+    ├── .password               # local password; never committed
+    ├── content/Oleander/       # private Hugo Markdown
+    └── html/                   # private rendered HTML
+```
+
+After editing private content, rebuild the encrypted pages from the public repository root:
+
+```powershell
+.\scripts\build-oleander.ps1
+```
+
+The script builds Oleander locally, keeps its readable HTML under `..\Oleander\html`, and writes only AES-256-GCM ciphertext wrappers to `protected/Oleander`. Commit the encrypted output together with the source changes. GitHub Actions builds the public Hugo content and then adds those encrypted wrappers to the Pages artifact.
+
+Only HTML is included in the encrypted output. Private images or downloads must not be placed under this repository's `static` directory; either embed them in the private HTML or encrypt them separately.
+
+This protects the plaintext from casual repository and page-source inspection, but a five-letter password still has low entropy and can be brute-forced offline. Use a longer password if stronger confidentiality is needed.

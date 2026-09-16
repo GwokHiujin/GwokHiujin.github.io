@@ -7,8 +7,7 @@
   --container-width: 81.6ch;
 }
 
-#site-shell,
-#oleander-protected:not([hidden]) {
+#site-shell {
   display: contents;
 }
 
@@ -60,71 +59,12 @@
   margin-top: var(--spacing-lg);
 }
 
-.access-gate {
-  align-self: center;
-  border: 1px solid var(--color-border);
-  border-radius: var(--pre-border-radius);
-  box-shadow: 0 1px 2px var(--color-border);
-  padding: var(--spacing-lg);
-  width: 100%;
-}
-
-.access-gate__path,
-.access-gate__hint,
-.access-gate__error {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-small);
-}
-
-.access-gate__path {
-  margin-top: 0;
-}
-
-.access-gate__form {
-  display: grid;
-  gap: var(--spacing-sm);
-}
-
-.access-gate input {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--inline-border-radius);
-  padding: var(--spacing-sm);
-  width: 100%;
-}
-
-.access-gate button {
-  background: var(--color-text-primary);
-  border: 1px solid var(--color-text-primary);
-  border-radius: var(--inline-border-radius);
-  color: var(--color-bg-primary);
-  cursor: pointer;
-  justify-self: start;
-  padding: var(--spacing-sm) var(--spacing-md);
-}
-
-.access-gate button:hover {
-  opacity: 0.82;
-}
-
-.access-gate__error {
-  min-height: 1.5em;
-  margin: 0;
-}
-
-@media (max-width: 600px) {
-  .access-gate {
-    padding: var(--spacing-md);
-  }
-}
-
 @media (min-width: 1024px) {
   body {
     grid-template-columns: 1fr minmax(auto, 60ch) 1fr;
   }
 
-  #site-shell > *,
-  #oleander-protected > * {
+  #site-shell > * {
     grid-column: 2;
   }
 }

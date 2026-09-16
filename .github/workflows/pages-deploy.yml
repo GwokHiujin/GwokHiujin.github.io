@@ -42,6 +42,12 @@ jobs:
       - name: Build
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
 
+      - name: Add encrypted Oleander pages
+        run: |
+          test -f protected/Oleander/index.html
+          rm -rf public/Oleander
+          cp -a protected/Oleander public/Oleander
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
