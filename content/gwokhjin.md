@@ -7,7 +7,7 @@ title = "Gwok Hiujin"
 +++
 
 <figure class="index-image">
-  <img src="/images/index.png" alt="Gwok Hiujin">
+  <img src="/images/index.jpg" alt="Gwok Hiujin">
 </figure>
 
 - [Apodidae](/Apodidae/)
