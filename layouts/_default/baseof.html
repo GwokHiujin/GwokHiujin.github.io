@@ -1,0 +1,48 @@
+{{- $isOleander := eq (lower .Section) "oleander" -}}
+<!doctype html>
+<html lang="{{ site.Language.Locale }}" dir="{{ or site.Language.Direction `ltr` }}">
+  <head>
+    {{ partial "head.html" . }}
+    {{ if $isOleander }}<meta name="robots" content="noindex, nofollow, noarchive">{{ end }}
+  </head>
+  <body{{ if $isOleander }} class="oleander-locked"{{ end }}>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    {{ if $isOleander }}
+      <section class="access-gate" id="oleander-gate" aria-labelledby="oleander-gate-title">
+        <p class="access-gate__path" aria-hidden="true">Gwok Hiujin / Oleander /</p>
+        <h1 id="oleander-gate-title">Oleander</h1>
+        <form class="access-gate__form" id="oleander-gate-form">
+          <label for="oleander-password">Password</label>
+          <input
+            id="oleander-password"
+            name="password"
+            type="password"
+            minlength="5"
+            maxlength="5"
+            pattern="[a-z]{5}"
+            autocomplete="current-password"
+            autocapitalize="none"
+            spellcheck="false"
+            required
+          >
+          <p class="access-gate__hint">请输入 5 个小写英文字母。你知道的，就是那 5 个小写英文字母。</p>
+          <p class="access-gate__error" id="oleander-gate-error" role="status" aria-live="polite"></p>
+          <button type="submit">Enter</button>
+        </form>
+        <p><a href="{{ `/` | relURL }}">../</a></p>
+        <noscript><p>需要启用 JavaScript 才能进入这个分类。</p></noscript>
+      </section>
+    {{ end }}
+
+    <div id="{{ if $isOleander }}oleander-protected{{ else }}site-shell{{ end }}"{{ if $isOleander }} hidden{{ end }}>
+      <header role="banner">{{ partial "header.html" . }}</header>
+      <main id="main-content" role="main" tabindex="-1">{{ block "main" . }}{{ end }}</main>
+      <footer role="contentinfo">{{ partial "footer.html" . }}</footer>
+    </div>
+
+    {{ if $isOleander }}
+      <script src="{{ `js/oleander-gate.js` | relURL }}" defer></script>
+    {{ end }}
+  </body>
+</html>

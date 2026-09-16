@@ -1,0 +1,9 @@
+{{ define "main" }}
+  {{ with site.GetPage "/gwokhjin" }}
+    <article class="home-intro">
+      {{ .Content }}
+    </article>
+  {{ else }}
+    <p>Homepage content is unavailable.</p>
+  {{ end }}
+{{ end }}

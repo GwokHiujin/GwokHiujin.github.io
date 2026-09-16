@@ -1,0 +1,17 @@
+{{ define "main" }}
+  <h1>#{{ .Title }}</h1>
+
+  {{ if .Pages }}
+    <ul class="tag-posts">
+      {{ range .Pages.ByTitle }}
+        <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+      {{ end }}
+    </ul>
+  {{ else }}
+    <p class="empty-state">这里什么也没有。</p>
+  {{ end }}
+
+  <div class="terminal-nav">
+    <div class="back-nav"><a href="{{ `/tags/` | relURL }}" class="back-link">../</a></div>
+  </div>
+{{ end }}

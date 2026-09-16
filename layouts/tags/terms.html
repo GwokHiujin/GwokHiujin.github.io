@@ -1,0 +1,19 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+
+  {{ if .Data.Terms }}
+    <nav class="tag-index" aria-label="Tags">
+      <ul>
+        {{ range .Data.Terms.Alphabetical }}
+          <li><a href="{{ .Page.RelPermalink }}">#{{ .Page.LinkTitle }}</a> <span class="text-muted">({{ .Count }})</span></li>
+        {{ end }}
+      </ul>
+    </nav>
+  {{ else }}
+    <p class="empty-state">这里什么也没有。</p>
+  {{ end }}
+
+  <div class="terminal-nav">
+    <div class="back-nav"><a href="{{ `/` | relURL }}" class="back-link">../</a></div>
+  </div>
+{{ end }}

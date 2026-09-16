@@ -1,0 +1,59 @@
+baseURL = "https://gwokhiujin.github.io/"
+locale = "zh-CN"
+defaultContentLanguage = "zh"
+title = "Gwok Hiujin"
+theme = "shibui"
+timeZone = "Asia/Shanghai"
+enableGitInfo = true
+enableRobotsTXT = true
+disablePathToLower = true
+
+[taxonomies]
+  tag = "tags"
+
+[params]
+  description = "Gwok Hiujin's personal blog."
+  comments = false
+  showtoc = true
+  showreadingtime = true
+  showlastmod = true
+  avatar = "/images/avatar.jpg"
+  ogImage = "/images/index.png"
+
+[params.author]
+  name = "Gwok Hiujin"
+  email = "guozi1625113688@163.com"
+
+[markup]
+  defaultMarkdownHandler = "goldmark"
+
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+    noClasses = true
+    style = "algol_nu"
+
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = true
+
+[frontmatter]
+  date = ["date", "publishDate", "lastmod"]
+  expiryDate = ["expiryDate"]
+  lastmod = [":git", "lastmod", "date", "publishDate"]
+  publishDate = ["publishDate", "date"]
+
+[caches]
+  [caches.images]
+    dir = ":cacheDir/images"
+
+[module]
+  [module.hugoVersion]
+    extended = false
+    min = "0.93.0"
