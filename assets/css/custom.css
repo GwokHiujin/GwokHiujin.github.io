@@ -1,4 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;600;700&display=swap");
+
 :root {
+  --font-family-mono: "Noto Sans CJK HK", "Noto Sans HK", "Noto Sans", sans-serif;
   --font-size-base: 0.9rem;
   --font-size-small: 0.76rem;
   --container-width: 81.6ch;
