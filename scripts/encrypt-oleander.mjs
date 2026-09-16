@@ -25,6 +25,47 @@ async function findHtmlFiles(directory) {
   return files;
 }
 
+function escapeAttribute(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+async function inlineLocalStyles(html, assetRoot) {
+  const tagPattern = /<link\b[^>]*>/gi;
+  const matches = [...html.matchAll(tagPattern)];
+  let result = "";
+  let cursor = 0;
+  let inlinedCount = 0;
+
+  for (const match of matches) {
+    const tag = match[0];
+    if (!/\brel\s*=\s*(["'])stylesheet\1/i.test(tag)) continue;
+    const hrefMatch = tag.match(/\bhref\s*=\s*(["'])(.*?)\1/i);
+    if (!hrefMatch) continue;
+
+    const href = hrefMatch[2];
+    if (/^(?:[a-z]+:)?\/\//i.test(href) || href.startsWith("data:")) continue;
+
+    const pathname = decodeURIComponent(new URL(href, "https://local.invalid/").pathname);
+    const assetPath = path.resolve(assetRoot, `.${pathname}`);
+    const safeRoot = `${path.resolve(assetRoot)}${path.sep}`;
+    if (!assetPath.startsWith(safeRoot)) throw new Error(`Stylesheet escapes the generated site: ${href}`);
+    if (!existsSync(assetPath)) throw new Error(`Generated stylesheet does not exist: ${assetPath}`);
+
+    const css = (await readFile(assetPath, "utf8")).replace(/<\/style/gi, "<\\/style");
+    result += html.slice(cursor, match.index);
+    result += `<style data-href="${escapeAttribute(href)}">\n${css}\n</style>`;
+    cursor = match.index + tag.length;
+    inlinedCount += 1;
+  }
+
+  if (inlinedCount === 0) throw new Error("No local stylesheets were found to embed.");
+  return result + html.slice(cursor);
+}
+
 function encryptedDocument(payload) {
   const payloadJson = JSON.stringify(payload).replaceAll("<", "\\u003c");
   return `<!doctype html>
@@ -163,10 +204,12 @@ const args = readArguments(process.argv.slice(2));
 const inputRoot = path.resolve(args.input ?? "");
 const outputRoot = path.resolve(args.output ?? "");
 const configPath = path.resolve(args.config ?? "");
+const assetRoot = path.resolve(args["asset-root"] ?? "");
 const password = process.env.OLEANDER_PASSWORD;
 
 if (!existsSync(inputRoot)) throw new Error(`Input directory does not exist: ${inputRoot}`);
 if (!existsSync(configPath)) throw new Error(`Encryption config does not exist: ${configPath}`);
+if (!existsSync(assetRoot)) throw new Error(`Generated asset directory does not exist: ${assetRoot}`);
 if (!password) throw new Error("OLEANDER_PASSWORD is not set");
 
 const config = JSON.parse(await readFile(configPath, "utf8"));
@@ -177,7 +220,9 @@ if (htmlFiles.length === 0) throw new Error(`No HTML files found under ${inputRo
 
 await rm(outputRoot, { recursive: true, force: true });
 for (const inputPath of htmlFiles) {
-  const plaintext = await readFile(inputPath, "utf8");
+  const source = await readFile(inputPath, "utf8");
+  const plaintext = await inlineLocalStyles(source, assetRoot);
+  await writeFile(inputPath, plaintext, "utf8");
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", key, iv);
   const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);

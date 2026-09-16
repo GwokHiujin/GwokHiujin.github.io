@@ -49,7 +49,7 @@ After editing private content, rebuild the encrypted pages from the public repos
 .\scripts\build-oleander.ps1
 ```
 
-The script builds Oleander locally, keeps its readable HTML under `..\Oleander\html`, and writes only AES-256-GCM ciphertext wrappers to `protected/Oleander`. Commit the encrypted output together with the source changes. GitHub Actions builds the public Hugo content and then adds those encrypted wrappers to the Pages artifact.
+The script builds Oleander locally, embeds the generated Shibui stylesheets into each readable page, keeps that readable HTML under `..\Oleander\html`, and writes only AES-256-GCM ciphertext wrappers to `protected/Oleander`. Commit the encrypted output together with the source changes. GitHub Actions builds the public Hugo content and then adds those encrypted wrappers to the Pages artifact.
 
 Only HTML is included in the encrypted output. Private images or downloads must not be placed under this repository's `static` directory; either embed them in the private HTML or encrypt them separately.
 

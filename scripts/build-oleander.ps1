@@ -106,7 +106,7 @@ if ($password -notmatch "^[a-z]{5}$") {
 
 try {
   $env:OLEANDER_PASSWORD = $password
-  & node $encryptScript --input $plainHtml --output $encryptedRoot --config $cryptoConfig
+  & node $encryptScript --input $plainHtml --output $encryptedRoot --config $cryptoConfig --asset-root $stagedSite
   if ($LASTEXITCODE -ne 0) { throw "Oleander encryption failed." }
 } finally {
   Remove-Item Env:OLEANDER_PASSWORD -ErrorAction SilentlyContinue
