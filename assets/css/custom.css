@@ -1,7 +1,7 @@
 :root {
   --font-size-base: 0.9rem;
   --font-size-small: 0.76rem;
-  --container-width: 68ch;
+  --container-width: 81.6ch;
 }
 
 #site-shell,
@@ -11,13 +11,16 @@
 
 .index-image {
   margin: 0 auto var(--spacing-lg);
-  max-width: 42rem;
+  max-width: 50.4rem;
 }
 
 .index-image img {
+  border: 0;
+  border-radius: 0;
   width: 100%;
   max-height: 70vh;
   object-fit: contain;
+  padding: 0;
 }
 
 .home-intro > ul,
@@ -113,8 +116,24 @@
 }
 
 @media (min-width: 1024px) {
+  body {
+    grid-template-columns: 1fr minmax(auto, 60ch) 1fr;
+  }
+
   #site-shell > *,
   #oleander-protected > * {
     grid-column: 2;
+  }
+}
+
+@media (min-width: 1400px) {
+  body {
+    grid-template-columns: 1fr minmax(auto, 72ch) 1fr;
+  }
+}
+
+@media (min-width: 1800px) {
+  body {
+    grid-template-columns: 1fr minmax(auto, 86.4ch) 1fr;
   }
 }
