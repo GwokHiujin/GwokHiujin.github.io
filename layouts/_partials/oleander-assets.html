@@ -1,0 +1,71 @@
+<script>
+  (() => {
+    "use strict";
+    const storageKey = "gwokhiujin:oleander:derived-key";
+    const fromBase64 = (value) => Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
+
+    const loadAsset = async (container) => {
+      const status = container.querySelector(".encrypted-pdf__status");
+      try {
+        const savedKey = sessionStorage.getItem(storageKey);
+        if (!savedKey) throw new Error("The Oleander key is unavailable.");
+
+        const manifestResponse = await fetch(container.dataset.encryptedSrc, { credentials: "same-origin" });
+        if (!manifestResponse.ok) throw new Error(`Unable to load the encrypted PDF manifest (${manifestResponse.status}).`);
+        const manifest = await manifestResponse.json();
+        if (manifest.version !== 1 || !Array.isArray(manifest.parts) || manifest.parts.length === 0) {
+          throw new Error("The encrypted PDF manifest is invalid.");
+        }
+
+        const sealed = new Uint8Array(manifest.encryptedBytes);
+        let offset = 0;
+        for (let index = 0; index < manifest.parts.length; index += 1) {
+          status.textContent = `正在读取 PDF（${index + 1}/${manifest.parts.length}）…`;
+          const partURL = new URL(manifest.parts[index].name, manifestResponse.url);
+          const partResponse = await fetch(partURL, { credentials: "same-origin" });
+          if (!partResponse.ok) throw new Error(`Unable to load encrypted PDF data (${partResponse.status}).`);
+          const part = new Uint8Array(await partResponse.arrayBuffer());
+          if (part.length !== manifest.parts[index].bytes) throw new Error("An encrypted PDF part has the wrong size.");
+          sealed.set(part, offset);
+          offset += part.length;
+        }
+        if (offset !== sealed.length) throw new Error("The encrypted PDF is incomplete.");
+
+        status.textContent = "正在解密 PDF…";
+        const key = await crypto.subtle.importKey("raw", fromBase64(savedKey), "AES-GCM", false, ["decrypt"]);
+        const plaintext = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: fromBase64(manifest.iv), tagLength: 128 },
+          key,
+          sealed,
+        );
+        const objectURL = URL.createObjectURL(new Blob([plaintext], { type: container.dataset.mediaType || "application/pdf" }));
+
+        const controls = document.createElement("p");
+        controls.className = "encrypted-pdf__controls";
+        const openLink = document.createElement("a");
+        openLink.href = objectURL;
+        openLink.target = "_blank";
+        openLink.rel = "noopener";
+        openLink.textContent = "在新标签页打开 PDF";
+        controls.append(openLink);
+
+        const viewer = document.createElement("iframe");
+        viewer.className = "encrypted-pdf__viewer";
+        viewer.src = objectURL;
+        viewer.title = container.dataset.title || "PDF";
+        viewer.referrerPolicy = "no-referrer";
+
+        status.remove();
+        container.append(controls, viewer);
+        window.addEventListener("pagehide", () => URL.revokeObjectURL(objectURL), { once: true });
+      } catch (error) {
+        console.error(error);
+        status.textContent = "PDF 解密失败，请刷新页面后重试。";
+      }
+    };
+
+    for (const container of document.querySelectorAll(".encrypted-pdf[data-encrypted-src]")) {
+      loadAsset(container);
+    }
+  })();
+</script>

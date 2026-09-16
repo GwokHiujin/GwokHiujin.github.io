@@ -90,9 +90,10 @@ Copy-Item -Path (Join-Path $privateContent "*") -Destination (Join-Path $stagedC
 if ($LASTEXITCODE -ne 0) { throw "Hugo failed to build the private Oleander source." }
 
 $builtOleander = Join-Path $stagedSite "Oleander"
-$builtFiles = Get-ChildItem -LiteralPath $builtOleander -Filter "*.html" -Recurse -File
-if (-not $builtFiles) { throw "Hugo did not generate any Oleander HTML files." }
-foreach ($file in $builtFiles) {
+$builtHtmlFiles = @(Get-ChildItem -LiteralPath $builtOleander -Filter "*.html" -Recurse -File)
+$builtAssetFiles = @(Get-ChildItem -LiteralPath $builtOleander -Recurse -File | Where-Object { $_.Extension -notin @(".html", ".xml") })
+if ($builtHtmlFiles.Count -eq 0) { throw "Hugo did not generate any Oleander HTML files." }
+foreach ($file in @($builtHtmlFiles + $builtAssetFiles)) {
   $relativePath = [IO.Path]::GetRelativePath($builtOleander, $file.FullName)
   $destination = Join-Path $plainHtml $relativePath
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination) | Out-Null
@@ -112,9 +113,13 @@ try {
   Remove-Item Env:OLEANDER_PASSWORD -ErrorAction SilentlyContinue
 }
 
-$encryptedFiles = Get-ChildItem -LiteralPath $encryptedRoot -Filter "*.html" -Recurse -File
-if ($encryptedFiles.Count -ne $builtFiles.Count) {
+$encryptedFiles = @(Get-ChildItem -LiteralPath $encryptedRoot -Filter "*.html" -Recurse -File)
+$encryptedAssetManifests = @(Get-ChildItem -LiteralPath $encryptedRoot -Filter "*.enc.json" -Recurse -File)
+if ($encryptedFiles.Count -ne $builtHtmlFiles.Count) {
   throw "Encrypted file count does not match plaintext file count."
+}
+if ($encryptedAssetManifests.Count -ne $builtAssetFiles.Count) {
+  throw "Encrypted asset count does not match private asset count."
 }
 foreach ($file in $encryptedFiles) {
   if ([IO.File]::ReadAllText($file.FullName).Contains($password)) {

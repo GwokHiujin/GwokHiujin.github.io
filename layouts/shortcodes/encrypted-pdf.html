@@ -1,0 +1,16 @@
+{{- $source := .Get "src" -}}
+{{- $title := .Get "title" | default "PDF" -}}
+{{- with .Page.Resources.GetMatch $source -}}
+  <figure
+    class="encrypted-pdf"
+    data-encrypted-src="{{ .RelPermalink }}.enc.json"
+    data-media-type="{{ .MediaType.Type }}"
+    data-title="{{ $title }}"
+  >
+    <figcaption>{{ $title }}</figcaption>
+    <p class="encrypted-pdf__status" role="status">正在解密 PDF…</p>
+    <noscript><p>需要启用 JavaScript 才能查看这个 PDF。</p></noscript>
+  </figure>
+{{- else -}}
+  {{- errorf "Encrypted PDF resource %q was not found for %s" $source .Page.Path -}}
+{{- end -}}

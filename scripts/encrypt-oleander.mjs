@@ -14,13 +14,13 @@ function readArguments(argv) {
   return result;
 }
 
-async function findHtmlFiles(directory) {
+async function findFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
     const entryPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...(await findHtmlFiles(entryPath)));
-    if (entry.isFile() && entry.name.toLowerCase().endsWith(".html")) files.push(entryPath);
+    if (entry.isDirectory()) files.push(...(await findFiles(entryPath)));
+    if (entry.isFile()) files.push(entryPath);
   }
   return files;
 }
@@ -200,6 +200,16 @@ function encryptedDocument(payload) {
 `;
 }
 
+function encryptBytes(bytes, key) {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv("aes-256-gcm", key, iv);
+  const encrypted = Buffer.concat([cipher.update(bytes), cipher.final()]);
+  return {
+    iv,
+    sealed: Buffer.concat([encrypted, cipher.getAuthTag()]),
+  };
+}
+
 const args = readArguments(process.argv.slice(2));
 const inputRoot = path.resolve(args.input ?? "");
 const outputRoot = path.resolve(args.output ?? "");
@@ -215,18 +225,20 @@ if (!password) throw new Error("OLEANDER_PASSWORD is not set");
 const config = JSON.parse(await readFile(configPath, "utf8"));
 const salt = Buffer.from(config.salt, "base64");
 const key = pbkdf2Sync(password, salt, config.iterations, 32, "sha256");
-const htmlFiles = await findHtmlFiles(inputRoot);
+const files = await findFiles(inputRoot);
+const htmlFiles = files.filter((file) => file.toLowerCase().endsWith(".html"));
+const assetFiles = files.filter((file) => !file.toLowerCase().endsWith(".html"));
 if (htmlFiles.length === 0) throw new Error(`No HTML files found under ${inputRoot}`);
+if (!Number.isSafeInteger(config.assetChunkBytes) || config.assetChunkBytes < 1) {
+  throw new Error("assetChunkBytes must be a positive integer");
+}
 
 await rm(outputRoot, { recursive: true, force: true });
 for (const inputPath of htmlFiles) {
   const source = await readFile(inputPath, "utf8");
   const plaintext = await inlineLocalStyles(source, assetRoot);
   await writeFile(inputPath, plaintext, "utf8");
-  const iv = randomBytes(12);
-  const cipher = createCipheriv("aes-256-gcm", key, iv);
-  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
-  const sealed = Buffer.concat([encrypted, cipher.getAuthTag()]);
+  const { iv, sealed } = encryptBytes(Buffer.from(plaintext, "utf8"), key);
   const payload = {
     version: config.version,
     iterations: config.iterations,
@@ -240,4 +252,29 @@ for (const inputPath of htmlFiles) {
   await writeFile(outputPath, encryptedDocument(payload), "utf8");
 }
 
-console.log(`Encrypted ${htmlFiles.length} Oleander HTML file(s).`);
+for (const inputPath of assetFiles) {
+  const relativePath = path.relative(inputRoot, inputPath);
+  const manifestPath = path.join(outputRoot, `${relativePath}.enc.json`);
+  const outputDirectory = path.dirname(manifestPath);
+  const partPrefix = `${path.basename(relativePath)}.enc.part`;
+  const { iv, sealed } = encryptBytes(await readFile(inputPath), key);
+  const parts = [];
+
+  await mkdir(outputDirectory, { recursive: true });
+  for (let offset = 0, index = 1; offset < sealed.length; offset += config.assetChunkBytes, index += 1) {
+    const partName = `${partPrefix}${String(index).padStart(3, "0")}`;
+    const bytes = sealed.subarray(offset, Math.min(offset + config.assetChunkBytes, sealed.length));
+    await writeFile(path.join(outputDirectory, partName), bytes);
+    parts.push({ name: partName, bytes: bytes.length });
+  }
+
+  const manifest = {
+    version: config.version,
+    iv: iv.toString("base64"),
+    encryptedBytes: sealed.length,
+    parts,
+  };
+  await writeFile(manifestPath, `${JSON.stringify(manifest)}\n`, "utf8");
+}
+
+console.log(`Encrypted ${htmlFiles.length} Oleander HTML file(s) and ${assetFiles.length} private asset(s).`);

@@ -59,6 +59,28 @@
   margin-top: var(--spacing-lg);
 }
 
+.encrypted-pdf {
+  margin: var(--spacing-lg) 0;
+  text-align: left;
+}
+
+.encrypted-pdf figcaption,
+.encrypted-pdf__status,
+.encrypted-pdf__controls {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.encrypted-pdf__viewer {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--pre-border-radius);
+  display: block;
+  height: min(80vh, 60rem);
+  margin-top: var(--spacing-sm);
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   body {
     grid-template-columns: 1fr minmax(auto, 60ch) 1fr;
