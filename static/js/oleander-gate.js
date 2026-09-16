@@ -11,11 +11,13 @@
 
   if (!gate || !protectedContent || !form || !input || !error) return;
 
-  const unlock = () => {
+  const unlock = (moveFocus = false) => {
     gate.hidden = true;
     protectedContent.hidden = false;
     document.body.classList.remove("oleander-locked");
-    document.getElementById("main-content")?.focus({ preventScroll: true });
+    if (moveFocus) {
+      document.getElementById("main-content")?.focus({ preventScroll: true });
+    }
   };
 
   try {
@@ -62,6 +64,6 @@
     } catch (_) {
       // Unlock the current page even when session storage is unavailable.
     }
-    unlock();
+    unlock(true);
   });
 })();
