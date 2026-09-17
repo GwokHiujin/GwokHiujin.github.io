@@ -59,6 +59,16 @@
   margin-top: var(--spacing-lg);
 }
 
+.encrypted-image {
+  margin: 0 0 var(--spacing-lg);
+}
+
+.encrypted-image__status {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  text-align: left;
+}
+
 .encrypted-pdf {
   margin: var(--spacing-lg) 0;
   text-align: left;

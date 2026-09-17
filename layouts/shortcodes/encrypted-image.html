@@ -1,0 +1,15 @@
+{{- $source := .Get "src" -}}
+{{- $alt := .Get "alt" | default "" -}}
+{{- with .Page.Resources.GetMatch $source -}}
+  <figure
+    class="encrypted-image"
+    data-encrypted-src="{{ .RelPermalink }}.enc.json"
+    data-media-type="{{ .MediaType.Type }}"
+    data-alt="{{ $alt }}"
+  >
+    <p class="encrypted-image__status" role="status">正在解密图片…</p>
+    <noscript><p>需要启用 JavaScript 才能查看这个图片。</p></noscript>
+  </figure>
+{{- else -}}
+  {{- errorf "Encrypted image resource %q was not found for %s" $source .Page.Path -}}
+{{- end -}}
