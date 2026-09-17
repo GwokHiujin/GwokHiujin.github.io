@@ -42,6 +42,12 @@ jobs:
       - name: Build
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
 
+      - name: Add generated tag pages
+        run: |
+          test -f generated/tags/index.html
+          rm -rf public/tags
+          cp -a generated/tags public/tags
+
       - name: Add encrypted Oleander pages
         run: |
           test -f protected/Oleander/index.html

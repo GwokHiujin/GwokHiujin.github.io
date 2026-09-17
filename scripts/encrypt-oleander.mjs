@@ -1,6 +1,6 @@
-import { createCipheriv, pbkdf2Sync, randomBytes } from "node:crypto";
+import { createCipheriv, createHmac, pbkdf2Sync, randomBytes } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 function readArguments(argv) {
@@ -64,6 +64,24 @@ async function inlineLocalStyles(html, assetRoot) {
 
   if (inlinedCount === 0) throw new Error("No local stylesheets were found to embed.");
   return result + html.slice(cursor);
+}
+
+async function exportTagPages(inputRoot, outputRoot, assetRoot) {
+  const htmlFiles = (await findFiles(inputRoot)).filter((file) => file.toLowerCase().endsWith(".html"));
+  if (htmlFiles.length === 0) throw new Error(`No tag HTML files found under ${inputRoot}`);
+
+  for (const inputPath of htmlFiles) {
+    const source = (await readFile(inputPath, "utf8")).replace(
+      /<link\b(?=[^>]*\brel\s*=\s*["']alternate["'])[^>]*>/gi,
+      "",
+    );
+    const html = (await inlineLocalStyles(source, assetRoot)).replace(/[ \t]+$/gm, "");
+    const outputPath = path.join(outputRoot, path.relative(inputRoot, inputPath));
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, html, "utf8");
+  }
+
+  return htmlFiles.length;
 }
 
 function encryptedDocument(payload) {
@@ -215,11 +233,15 @@ const inputRoot = path.resolve(args.input ?? "");
 const outputRoot = path.resolve(args.output ?? "");
 const configPath = path.resolve(args.config ?? "");
 const assetRoot = path.resolve(args["asset-root"] ?? "");
+const tagsInputRoot = args["tags-input"] ? path.resolve(args["tags-input"]) : null;
+const tagsOutputRoot = args["tags-output"] ? path.resolve(args["tags-output"]) : null;
 const password = process.env.OLEANDER_PASSWORD;
 
 if (!existsSync(inputRoot)) throw new Error(`Input directory does not exist: ${inputRoot}`);
 if (!existsSync(configPath)) throw new Error(`Encryption config does not exist: ${configPath}`);
 if (!existsSync(assetRoot)) throw new Error(`Generated asset directory does not exist: ${assetRoot}`);
+if (Boolean(tagsInputRoot) !== Boolean(tagsOutputRoot)) throw new Error("tags-input and tags-output must be provided together");
+if (tagsInputRoot && !existsSync(tagsInputRoot)) throw new Error(`Generated tags directory does not exist: ${tagsInputRoot}`);
 if (!password) throw new Error("OLEANDER_PASSWORD is not set");
 
 const config = JSON.parse(await readFile(configPath, "utf8"));
@@ -233,7 +255,8 @@ if (!Number.isSafeInteger(config.assetChunkBytes) || config.assetChunkBytes < 1)
   throw new Error("assetChunkBytes must be a positive integer");
 }
 
-await rm(outputRoot, { recursive: true, force: true });
+await mkdir(outputRoot, { recursive: true });
+const expectedOutputPaths = new Set();
 for (const inputPath of htmlFiles) {
   const source = await readFile(inputPath, "utf8");
   const plaintext = await inlineLocalStyles(source, assetRoot);
@@ -250,14 +273,54 @@ for (const inputPath of htmlFiles) {
   const outputPath = path.join(outputRoot, relativePath);
   await mkdir(path.dirname(outputPath), { recursive: true });
   await writeFile(outputPath, encryptedDocument(payload), "utf8");
+  expectedOutputPaths.add(path.resolve(outputPath));
 }
 
+let reusedAssetCount = 0;
 for (const inputPath of assetFiles) {
   const relativePath = path.relative(inputRoot, inputPath);
   const manifestPath = path.join(outputRoot, `${relativePath}.enc.json`);
   const outputDirectory = path.dirname(manifestPath);
   const partPrefix = `${path.basename(relativePath)}.enc.part`;
-  const { iv, sealed } = encryptBytes(await readFile(inputPath), key);
+  const sourceBytes = await readFile(inputPath);
+  const sourceId = createHmac("sha256", key).update(sourceBytes).digest("base64");
+  let existingManifest = null;
+  if (existsSync(manifestPath)) {
+    try {
+      existingManifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    } catch (_) {
+      existingManifest = null;
+    }
+  }
+
+  if (
+    existingManifest?.version === config.version &&
+    existingManifest?.sourceId === sourceId &&
+    existingManifest?.chunkBytes === config.assetChunkBytes &&
+    Array.isArray(existingManifest?.parts) &&
+    existingManifest.parts.length > 0
+  ) {
+    let complete = true;
+    for (const part of existingManifest.parts) {
+      if (typeof part.name !== "string" || path.basename(part.name) !== part.name) {
+        complete = false;
+        break;
+      }
+      const partPath = path.join(outputDirectory, part.name);
+      if (!existsSync(partPath) || (await stat(partPath)).size !== part.bytes) {
+        complete = false;
+        break;
+      }
+    }
+    if (complete) {
+      expectedOutputPaths.add(path.resolve(manifestPath));
+      for (const part of existingManifest.parts) expectedOutputPaths.add(path.resolve(outputDirectory, part.name));
+      reusedAssetCount += 1;
+      continue;
+    }
+  }
+
+  const { iv, sealed } = encryptBytes(sourceBytes, key);
   const parts = [];
 
   await mkdir(outputDirectory, { recursive: true });
@@ -265,16 +328,25 @@ for (const inputPath of assetFiles) {
     const partName = `${partPrefix}${String(index).padStart(3, "0")}`;
     const bytes = sealed.subarray(offset, Math.min(offset + config.assetChunkBytes, sealed.length));
     await writeFile(path.join(outputDirectory, partName), bytes);
+    expectedOutputPaths.add(path.resolve(outputDirectory, partName));
     parts.push({ name: partName, bytes: bytes.length });
   }
 
   const manifest = {
     version: config.version,
+    sourceId,
+    chunkBytes: config.assetChunkBytes,
     iv: iv.toString("base64"),
     encryptedBytes: sealed.length,
     parts,
   };
   await writeFile(manifestPath, `${JSON.stringify(manifest)}\n`, "utf8");
+  expectedOutputPaths.add(path.resolve(manifestPath));
 }
 
-console.log(`Encrypted ${htmlFiles.length} Oleander HTML file(s) and ${assetFiles.length} private asset(s).`);
+for (const outputPath of await findFiles(outputRoot)) {
+  if (!expectedOutputPaths.has(path.resolve(outputPath))) await rm(outputPath, { force: true });
+}
+
+const tagPageCount = tagsInputRoot ? await exportTagPages(tagsInputRoot, tagsOutputRoot, assetRoot) : 0;
+console.log(`Encrypted ${htmlFiles.length} Oleander HTML file(s) and ${assetFiles.length} private asset(s) (${reusedAssetCount} reused); exported ${tagPageCount} tag page(s).`);

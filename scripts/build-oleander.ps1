@@ -23,6 +23,7 @@ $stagedContent = Join-Path $buildRoot "content"
 $stagedSite = Join-Path $buildRoot "site"
 $plainHtml = Join-Path $PrivateRoot "html"
 $encryptedRoot = Join-Path $repoRoot "protected\Oleander"
+$generatedTags = Join-Path $repoRoot "generated\tags"
 $cryptoConfig = Join-Path $repoRoot "scripts\oleander-crypto.json"
 $encryptScript = Join-Path $repoRoot "scripts\encrypt-oleander.mjs"
 
@@ -81,6 +82,7 @@ $hugo = Resolve-HugoExecutable
 Reset-SafeDirectory -Path $stagedContent -AllowedRoot $PrivateRoot
 Reset-SafeDirectory -Path $stagedSite -AllowedRoot $PrivateRoot
 Reset-SafeDirectory -Path $plainHtml -AllowedRoot $PrivateRoot
+Reset-SafeDirectory -Path $generatedTags -AllowedRoot $repoRoot
 
 Copy-Item -Path (Join-Path $repoRoot "content\*") -Destination $stagedContent -Recurse -Force
 New-Item -ItemType Directory -Force -Path (Join-Path $stagedContent "Oleander") | Out-Null
@@ -107,7 +109,7 @@ if ($password -notmatch "^[a-z]{5}$") {
 
 try {
   $env:OLEANDER_PASSWORD = $password
-  & node $encryptScript --input $plainHtml --output $encryptedRoot --config $cryptoConfig --asset-root $stagedSite
+  & node $encryptScript --input $plainHtml --output $encryptedRoot --config $cryptoConfig --asset-root $stagedSite --tags-input (Join-Path $stagedSite "tags") --tags-output $generatedTags
   if ($LASTEXITCODE -ne 0) { throw "Oleander encryption failed." }
 } finally {
   Remove-Item Env:OLEANDER_PASSWORD -ErrorAction SilentlyContinue
@@ -115,11 +117,16 @@ try {
 
 $encryptedFiles = @(Get-ChildItem -LiteralPath $encryptedRoot -Filter "*.html" -Recurse -File)
 $encryptedAssetManifests = @(Get-ChildItem -LiteralPath $encryptedRoot -Filter "*.enc.json" -Recurse -File)
+$builtTagFiles = @(Get-ChildItem -LiteralPath (Join-Path $stagedSite "tags") -Filter "*.html" -Recurse -File)
+$generatedTagFiles = @(Get-ChildItem -LiteralPath $generatedTags -Filter "*.html" -Recurse -File)
 if ($encryptedFiles.Count -ne $builtHtmlFiles.Count) {
   throw "Encrypted file count does not match plaintext file count."
 }
 if ($encryptedAssetManifests.Count -ne $builtAssetFiles.Count) {
   throw "Encrypted asset count does not match private asset count."
+}
+if ($generatedTagFiles.Count -ne $builtTagFiles.Count) {
+  throw "Generated tag page count does not match the private build."
 }
 foreach ($file in $encryptedFiles) {
   if ([IO.File]::ReadAllText($file.FullName).Contains($password)) {
@@ -129,3 +136,4 @@ foreach ($file in $encryptedFiles) {
 
 Write-Output "Plaintext HTML: $plainHtml"
 Write-Output "Encrypted HTML: $encryptedRoot"
+Write-Output "Generated tag pages: $generatedTags"
