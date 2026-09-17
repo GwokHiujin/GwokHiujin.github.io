@@ -5,12 +5,12 @@
     <div class="category-intro">{{ . }}</div>
   {{ end }}
 
-  {{ $entries := .Pages.ByTitle }}
+  {{ $entries := .Pages.ByDate.Reverse }}
   {{ if $entries }}
     <nav class="category-posts" aria-label="{{ .Title }} posts">
       <ul>
         {{ range $entries }}
-          <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+          <li><a href="{{ .RelPermalink }}"><time datetime="{{ .Date.Format `2006-01-02` }}">{{ .Date.Format "2006-01-02" }}</time> {{ .LinkTitle }}</a></li>
         {{ end }}
       </ul>
     </nav>
