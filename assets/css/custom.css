@@ -65,6 +65,82 @@ blockquote * {
   color: var(--color-annotation);
 }
 
+.toc {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: var(--spacing-lg) 0;
+  overflow: visible;
+  padding: 0;
+  transition: none;
+}
+
+.toc-title {
+  background: transparent;
+  color: var(--color-annotation);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-weight: 400;
+  list-style: none;
+  padding: 0;
+}
+
+.toc-title:hover {
+  background: transparent;
+}
+
+.toc-title::-webkit-details-marker,
+.toc-title::before {
+  display: none;
+}
+
+.toc-content {
+  animation: none;
+  border: 0;
+  font-size: var(--font-size-small);
+  padding: var(--spacing-sm) 0 0;
+}
+
+.toc-content ol,
+.toc-content ol ol,
+.toc-content ol ol ol {
+  margin: 0;
+  opacity: 1;
+  padding: 0;
+}
+
+.toc-content ol ol {
+  padding-left: var(--spacing-md);
+}
+
+.toc-content ol li::before {
+  content: none;
+}
+
+.toc-content a {
+  border: 0;
+  color: var(--color-annotation);
+  display: block;
+  margin: 0;
+  padding: calc(var(--spacing-xs) / 2) 0;
+  position: static;
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+.toc-content a::after {
+  content: none;
+}
+
+.toc-content a:hover,
+.toc-content a:focus-visible,
+.toc-content a.is-active,
+.toc-content a[aria-current="location"] {
+  border: 0;
+  color: var(--color-text-primary);
+}
+
 .encrypted-image {
   margin: 0 0 var(--spacing-lg);
 }
@@ -105,16 +181,38 @@ blockquote * {
   #site-shell > * {
     grid-column: 2;
   }
+
+  .toc {
+    margin: 0;
+    max-height: calc(100vh - (2 * var(--spacing-lg)));
+    overflow-y: auto;
+    position: fixed;
+    right: calc(50% + 30ch + var(--spacing-lg));
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(16rem, calc(50vw - 30ch - (2 * var(--spacing-lg))));
+    z-index: 10;
+  }
 }
 
 @media (min-width: 1400px) {
   body {
     grid-template-columns: 1fr minmax(auto, 72ch) 1fr;
   }
+
+  .toc {
+    right: calc(50% + 36ch + var(--spacing-lg));
+    width: min(16rem, calc(50vw - 36ch - (2 * var(--spacing-lg))));
+  }
 }
 
 @media (min-width: 1800px) {
   body {
     grid-template-columns: 1fr minmax(auto, 86.4ch) 1fr;
+  }
+
+  .toc {
+    right: calc(50% + 43.2ch + var(--spacing-lg));
+    width: min(16rem, calc(50vw - 43.2ch - (2 * var(--spacing-lg))));
   }
 }

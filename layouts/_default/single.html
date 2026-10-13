@@ -22,6 +22,47 @@
   {{ end }}
 
   {{ .Content }}
+  {{ if and $hasToC (ge (len $headers) 1) }}
+    <script>
+      (() => {
+        const links = Array.from(document.querySelectorAll(".toc-content a[href^='#']"));
+        const entries = links.map((link) => {
+          const id = decodeURIComponent(new URL(link.href).hash.slice(1));
+          return { link, heading: document.getElementById(id) };
+        }).filter(({ heading }) => heading);
+
+        if (!entries.length) return;
+
+        let frame = 0;
+        const updateCurrentChapter = () => {
+          frame = 0;
+          const readingLine = window.innerHeight * 0.35;
+          let currentLink = null;
+
+          for (const entry of entries) {
+            if (entry.heading.getBoundingClientRect().top > readingLine) break;
+            currentLink = entry.link;
+          }
+
+          for (const link of links) {
+            const isCurrent = link === currentLink;
+            link.classList.toggle("is-active", isCurrent);
+            if (isCurrent) link.setAttribute("aria-current", "location");
+            else link.removeAttribute("aria-current");
+          }
+        };
+
+        const requestUpdate = () => {
+          if (!frame) frame = window.requestAnimationFrame(updateCurrentChapter);
+        };
+
+        window.addEventListener("scroll", requestUpdate, { passive: true });
+        window.addEventListener("resize", requestUpdate);
+        window.addEventListener("hashchange", requestUpdate);
+        updateCurrentChapter();
+      })();
+    </script>
+  {{ end }}
   <div class="time">
     {{ partial "date.html" .Date }}
     {{ $showReadingTime := .Params.showreadingtime | default site.Params.showreadingtime | default true }}
