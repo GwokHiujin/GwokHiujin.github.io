@@ -5,6 +5,7 @@
   --font-size-base: 0.9rem;
   --font-size-small: 0.76rem;
   --container-width: 81.6ch;
+  --color-annotation: hsl(var(--bg-h) var(--bg-s) 55%);
 }
 
 #site-shell {
@@ -57,6 +58,11 @@
 .empty-state {
   color: var(--color-text-muted);
   margin-top: var(--spacing-lg);
+}
+
+blockquote,
+blockquote * {
+  color: var(--color-annotation);
 }
 
 .encrypted-image {
