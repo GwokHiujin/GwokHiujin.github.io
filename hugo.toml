@@ -1,6 +1,7 @@
 baseURL = "https://gwokhiujin.github.io/"
 locale = "zh-CN"
 defaultContentLanguage = "zh"
+hasCJKLanguage = true
 title = "Gwok Hiujin"
 theme = "shibui"
 timeZone = "Asia/Shanghai"
