@@ -1,9 +1,10 @@
 {{ define "main" }}
   <h1>#{{ .Data.Term }}</h1>
 
-  {{ if .Pages }}
+  {{ $entries := .Pages.ByDate.Reverse }}
+  {{ if $entries }}
     <ul class="tag-posts">
-      {{ range .Pages.ByTitle }}
+      {{ range $entries }}
         <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
       {{ end }}
     </ul>
