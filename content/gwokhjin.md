@@ -14,3 +14,9 @@ title = "Gwok Hiujin"
 - [Oleander](/Oleander/)
 - [Taoasis](/Taoasis/)
 - [Tag](/tags/)
+
+Someone, or something among the planes.
+
+[kuoryan1625@gmail.com](mailto:kuoryan1625@gmail.com)
+
+Updated 2026-10-13
