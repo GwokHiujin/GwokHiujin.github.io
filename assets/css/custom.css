@@ -65,6 +65,13 @@ blockquote * {
   color: var(--color-annotation);
 }
 
+h2:not(.manual-number)::before,
+h3:not(.manual-number)::before,
+h4:not(.manual-number)::before,
+h5:not(.manual-number)::before {
+  content: none;
+}
+
 .toc {
   background: transparent;
   border: 0;
