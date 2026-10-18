@@ -95,6 +95,15 @@ function encryptedDocument(payload) {
     <title>Oleander</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QE85ZJEF51"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-QE85ZJEF51');
+    </script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;600;700&display=swap");
       :root { --border: #ededed; --muted: #666; --paper: #fcfcfc; --ink: #161616; }

@@ -2,6 +2,7 @@
 <html lang="{{ site.Language.Locale }}" dir="{{ or site.Language.Direction `ltr` }}">
   <head>
     {{ partial "head.html" . }}
+    {{ partialCached "head/google-analytics.html" . }}
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
