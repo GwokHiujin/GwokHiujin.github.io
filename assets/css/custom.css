@@ -60,6 +60,15 @@
   margin-top: var(--spacing-lg);
 }
 
+.home-intro .elsewhere-link,
+.home-intro .elsewhere-link:hover,
+.home-intro .elsewhere-link:focus-visible {
+  border-bottom: 0;
+  font-style: italic;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
 blockquote,
 blockquote * {
   color: var(--color-annotation);

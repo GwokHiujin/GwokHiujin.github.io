@@ -1,6 +1,7 @@
 /public/
 /resources/_gen/
 /.hugo_build.lock
+/data/read_tracker.json.tmp
 
 # Local tooling
 /node_modules/

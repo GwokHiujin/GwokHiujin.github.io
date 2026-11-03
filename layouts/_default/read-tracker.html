@@ -1,0 +1,25 @@
+{{ define "main" }}
+  <article class="read-tracker">
+    <h1>{{ .Title }}</h1>
+
+    <figure class="index-image">
+      <img src="{{ `/images/B043_Rembrandt.jpg` | relURL }}" alt="Rembrandt" width="4764" height="3348">
+    </figure>
+
+    {{ with hugo.Data.read_tracker }}
+      <p class="read-tracker-summary"><em>({{ len . }} since 2024/09/01)</em></p>
+
+      <div class="read-tracker-entries">
+        {{ range . }}
+          <p>{{ replace .date "-" "/" }} {{ .title }}{{ with .rating }} {{ . }}{{ end }}</p>
+        {{ end }}
+      </div>
+    {{ else }}
+      <p class="empty-state">这里什么也没有。</p>
+    {{ end }}
+
+    <div class="terminal-nav">
+      <div class="back-nav"><a href="{{ `/` | relURL }}" class="back-link">../</a></div>
+    </div>
+  </article>
+{{ end }}

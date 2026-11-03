@@ -11,6 +11,28 @@ hugo server -D
 
 The GitHub Actions workflow installs the pinned Hugo version, builds the site, and deploys `public/` to GitHub Pages.
 
+## Read tracker sync
+
+The public page at `/elsewhere_outside_the_planes/` is generated from `data/read_tracker.json`. To refresh it from the Notion **Read Tracker → Books** database, create a Notion connection with read access, share the Books database with that connection, and set its bearer token only in your current shell:
+
+```powershell
+$env:NOTION_ACCESS_TOKEN = "your-secret-token"
+```
+
+Sync the tracked JSON snapshot without publishing:
+
+```powershell
+.\scripts\sync-read-tracker.ps1
+```
+
+To sync, run a production Hugo verification build, commit only the snapshot, and push it to `main`:
+
+```powershell
+.\scripts\sync-read-tracker.ps1 -Publish
+```
+
+If Hugo is not available on `PATH`, provide it explicitly with `-HugoPath C:\path\to\hugo.exe`. The script reads `Name`, `Completed Date`, and `Rating`, follows every Notion pagination cursor, omits incomplete records, converts each Notion `★` to `*`, and never stores or prints the token.
+
 ## Content layout
 
 Public posts belong under either of these top-level sections:

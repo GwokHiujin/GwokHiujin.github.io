@@ -15,8 +15,8 @@ title = "Gwok Hiujin"
 - [Taoasis](/Taoasis/)
 - [Tag](/tags/)
 
-Someone, or something among the planes.
+Someone, or something among the planes. <a class="elsewhere-link" href="/elsewhere_outside_the_planes/"><em>Elsewhere outside the planes</em></a>
 
 [kuoryan1625@gmail.com](mailto:kuoryan1625@gmail.com)
 
-Updated 2026-10-13
+Updated 2026-11-3
