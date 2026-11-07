@@ -17,6 +17,6 @@ title = "Gwok Hiujin"
 
 Someone, or something among the planes. <a class="elsewhere-link" href="/elsewhere_outside_the_planes/"><em>Elsewhere outside the planes</em></a>
 
-[kuoryan1625@gmail.com](mailto:kuoryan1625@gmail.com)
+*[kuoryan1625@gmail.com](mailto:kuoryan1625@gmail.com)*
 
-Updated 2026-11-3
+*Updated 2026-11-07*
