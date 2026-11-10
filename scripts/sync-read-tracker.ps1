@@ -138,11 +138,16 @@ do {
     $nameProperty = $page.properties.PSObject.Properties["Name"]
     $dateProperty = $page.properties.PSObject.Properties["Completed Date"]
     $ratingProperty = $page.properties.PSObject.Properties["Rating"]
+    $AuthorProperty = $page.properties.PSObject.Properties["Author"]
     if ($null -eq $nameProperty -or $null -eq $dateProperty -or $null -eq $ratingProperty) {
       throw "The Notion schema no longer contains the expected Name, Completed Date, and Rating properties."
     }
 
     $title = Get-PlainTitle $nameProperty.Value.title
+    $author = Get-PlainTitle $AuthorProperty.Value.rich_text
+    if (-not [string]::IsNullOrWhiteSpace($author)) {
+      $title = "$title / $author"
+    }
     $start = if ($null -ne $dateProperty.Value.date) { [string]$dateProperty.Value.date.start } else { "" }
     $dateMatch = [regex]::Match($start, "^\d{4}-\d{2}-\d{2}")
 
